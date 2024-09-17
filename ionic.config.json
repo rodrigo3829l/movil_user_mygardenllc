@@ -1,0 +1,7 @@
+{
+  "name": "movil_user_mygardenllc",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
