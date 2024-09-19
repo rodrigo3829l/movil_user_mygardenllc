@@ -1,0 +1,13 @@
+# Módulo: Welcome
+
+Este módulo contiene la pantalla de bienvenida de la aplicación.
+
+## Archivos:
+
+1. WelcomePage.vue:
+   - Esta es la primera pantalla que verá el usuario cuando abra la aplicación.
+   - Debe incluir un mensaje de bienvenida, el logo de la empresa, y posiblemente un botón para continuar al login o a la página principal si el usuario ya está autenticado.
+
+# Convenciones:
+- Mantén este módulo simple. La pantalla de bienvenida debe ser lo más ligera posible.
+- Evita agregar demasiada lógica en esta pantalla. Redirige rápidamente a la pantalla de login o al home.

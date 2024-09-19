@@ -1,0 +1,13 @@
+# Módulo: Pagos
+
+Este módulo gestiona la pantalla de pago de servicios.
+
+## Archivos:
+
+1. PaymentPage.vue:
+   - Pantalla donde el usuario puede realizar el pago por los servicios agendados.
+   - Reutiliza el componente `PaymentConfirmation.vue` para confirmar los detalles de la transacción.
+
+# Convenciones:
+- Implementa métodos de pago seguros y valida la información ingresada por el usuario.
+- Asegúrate de que la confirmación del pago sea clara y fácil de entender.

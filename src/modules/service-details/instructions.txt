@@ -1,0 +1,12 @@
+# Módulo: Detalles del servicio
+
+Este módulo gestiona la pantalla para ver los detalles de un servicio específico.
+
+## Archivos:
+
+1. ServiceDetailsPage.vue:
+   - Pantalla donde se muestran todos los detalles de un servicio seleccionado.
+   - Reutiliza componentes como `Comments.vue` para mostrar comentarios relacionados con el servicio.
+
+# Convenciones:
+- Asegúrate de mostrar toda la información relevante sobre el servicio seleccionado (nombre, fecha, detalles, comentarios, etc.).

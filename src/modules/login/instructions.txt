@@ -1,0 +1,14 @@
+# Módulo: Login
+
+Este módulo contiene la lógica y la pantalla de inicio de sesión.
+
+## Archivos:
+
+1. LoginPage.vue:
+   - Pantalla donde el usuario podrá iniciar sesión.
+   - Esta pantalla se conecta a la base de datos para verificar las credenciales del usuario.
+   - Incluye un formulario para el ingreso del correo electrónico y la contraseña, y puede incluir un enlace para la recuperación de contraseña.
+
+# Convenciones:
+- Asegúrate de validar correctamente los campos del formulario.
+- Si utilizas autenticación basada en tokens o cookies, aquí es donde debes realizar la gestión inicial de esas sesiones.

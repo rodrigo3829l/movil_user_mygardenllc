@@ -1,0 +1,13 @@
+# Módulo: Perfil de usuario
+
+Este módulo contiene la lógica y pantalla relacionadas con el perfil del usuario.
+
+## Archivos:
+
+1. ProfilePage.vue:
+   - Pantalla donde el usuario puede ver y editar su perfil.
+   - El perfil incluye información personal como nombre, correo electrónico, y configuraciones de cuenta.
+
+# Convenciones:
+- Asegúrate de proteger esta pantalla para que solo los usuarios autenticados puedan acceder a ella.
+- Implementa la lógica de actualización de datos con validación.

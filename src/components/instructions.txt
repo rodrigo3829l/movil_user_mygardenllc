@@ -1,0 +1,33 @@
+# Carpeta: components
+
+Esta carpeta contiene todos los componentes reutilizables de la aplicación. Los componentes aquí deben ser genéricos y no depender de pantallas o módulos específicos. Estos pueden ser usados en varias partes de la aplicación para evitar duplicar código.
+
+## Componentes clave:
+
+1. Navbar.vue:
+   - Componente que representa la barra de navegación inferior que estará presente en varias pantallas.
+   - Debe incluir enlaces a las rutas principales de la aplicación.
+
+2. Comments.vue:
+   - Componente para mostrar los comentarios de los usuarios.
+   - Puede ser reutilizado tanto en la pantalla de inicio como en los detalles de proyectos o servicios.
+
+3. ServicesList.vue:
+   - Componente reutilizable para mostrar una lista de servicios. 
+   - Este componente será utilizado en la pantalla de "Servicios" y "Mis servicios".
+
+4. Categories.vue:
+   - Componente para mostrar categorías de servicios.
+   - Este componente debe ser utilizado para filtrar los servicios por categoría.
+
+5. ProjectsList.vue:
+   - Componente que mostrará la lista de proyectos destacados.
+   - Será utilizado en la pantalla de "Proyectos destacados".
+
+6. PaymentConfirmation.vue:
+   - Componente para confirmar el pago de los servicios agendados.
+   - Será utilizado en la pantalla de pago.
+
+# Convenciones:
+- Asegúrate de mantener los componentes lo más genéricos posible.
+- Todos los componentes deben tener nombres en PascalCase y estar correctamente documentados con comentarios.

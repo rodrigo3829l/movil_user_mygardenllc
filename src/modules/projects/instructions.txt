@@ -1,0 +1,16 @@
+# Módulo: Proyectos destacados
+
+Este módulo gestiona todo lo relacionado con los proyectos destacados.
+
+## Archivos:
+
+1. ProjectsPage.vue:
+   - Pantalla que lista todos los proyectos destacados.
+   - Reutiliza el componente global `ProjectsList.vue`.
+
+2. ProjectDetailsPage.vue:
+   - Pantalla que muestra los detalles de un proyecto seleccionado.
+   - Reutiliza el componente `Comments.vue` para mostrar comentarios sobre el proyecto.
+
+# Convenciones:
+- Asegúrate de que los proyectos estén correctamente categorizados y que sea fácil navegar entre ellos.

@@ -1,0 +1,22 @@
+# Módulo: Home
+
+Este módulo gestiona la pantalla principal de la aplicación.
+
+## Archivos:
+
+1. HomePage.vue:
+   - Esta es la pantalla principal a la que accede el usuario una vez que ha iniciado sesión.
+   - Aquí se mostrará información relevante de la empresa, servicios disponibles, comentarios, y categorías de servicios.
+
+## Subcarpeta: components/
+   - Esta subcarpeta contiene componentes específicos solo para el home.
+
+   1. HomeInfo.vue:
+      - Componente que muestra la información general de la empresa.
+   
+   2. ServicesOverview.vue:
+      - Componente que muestra un resumen de los servicios disponibles.
+
+# Convenciones:
+- Mantén esta página modular, separando la lógica en componentes para facilitar el mantenimiento.
+- Reutiliza componentes globales cuando sea necesario, como la lista de servicios y los comentarios.

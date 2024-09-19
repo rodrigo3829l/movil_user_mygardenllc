@@ -1,0 +1,12 @@
+# Módulo: Mis servicios
+
+Este módulo contiene la lógica y pantalla que muestra los servicios agendados por el usuario.
+
+## Archivos:
+
+1. MyServicesPage.vue:
+   - Pantalla donde el usuario puede ver una lista de los servicios que ha agendado.
+   - Reutiliza el componente global `ServicesList.vue` para mostrar los servicios.
+
+# Convenciones:
+- Implementa filtros para que el usuario pueda ver servicios por estado (completado, pendiente, cancelado, etc.).

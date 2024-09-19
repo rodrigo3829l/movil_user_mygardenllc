@@ -1,0 +1,17 @@
+# Módulo: Servicios
+
+Este módulo gestiona todo lo relacionado con los servicios ofrecidos.
+
+## Archivos:
+
+1. ServicesPage.vue:
+   - Pantalla que lista todos los servicios disponibles.
+   - Reutiliza el componente global `ServicesList.vue` para mostrar los servicios.
+
+2. ScheduleService.vue:
+   - Pantalla donde los usuarios pueden agendar un servicio.
+   - Incluye un formulario que permitirá al usuario seleccionar el servicio, fecha, y detalles adicionales.
+
+# Convenciones:
+- Asegúrate de que los servicios estén correctamente organizados en categorías cuando se muestren.
+- Valida adecuadamente los formularios de agendamiento de servicios.
