@@ -1,0 +1,14 @@
+/* styles/themes.css */
+
+/* Definimos un color personalizado para los inputs */
+:root {
+    --ion-color-success-input: #86A286;  /* Color verde para el texto y el label */
+    --ion-color-success-input-contrast: #ffffff;  /* Contraste en caso de texto sobre fondo oscuro */
+    --ion-color-success-input-shade: #729872;  /* Sombra opcional */
+    --ion-color-success-input-tint: #9ab79a;  /* Tinte más claro opcional */
+  
+    /* Removemos la línea de foco */
+    --ion-item-highlight-color-focused: transparent;  /* Línea que aparece al enfocar el input */
+    --ion-item-highlight-height-focused: 0px;         /* Establecer la altura de la línea en 0 */
+  }
+  
