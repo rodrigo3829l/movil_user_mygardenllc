@@ -1,69 +1,100 @@
 # Proyecto My Garden LLC - Aplicación Móvil
+
 ## 1. Descripción del Proyecto
->[!IMPORTANT]
->My Garden LLC es una empresa dedicada a ofrecer servicios de jardinería a sus clientes en distintas localidades. El objetivo de este proyecto es trasladar las funcionalidades clave de su plataforma web a una aplicación móvil multiplataforma, compatible con dispositivos iOS y Android, utilizando Ionic como framework de desarrollo.
+
+>[!IMPORTANT]  
+**My Garden LLC** es una empresa que ofrece servicios de jardinería a clientes en diversas localidades. El objetivo principal de este proyecto es trasladar las funcionalidades clave de su plataforma web a una aplicación móvil **multiplataforma**, compatible con dispositivos **iOS y Android**, utilizando **Ionic** como framework de desarrollo.
+
 ### Objetivo General:
-El objetivo principal de esta aplicación es proporcionar una interfaz móvil sencilla y eficiente que permita a los usuarios gestionar sus servicios de jardinería de manera práctica desde sus teléfonos, replicando las funcionalidades de la web. De esta manera, los usuarios tendrán la posibilidad de acceder fácilmente a su cuenta, visualizar servicios disponibles, agendar citas y gestionar servicios contratados de manera rápida y accesible.
+El objetivo principal es proporcionar una interfaz móvil que permita a los usuarios gestionar sus servicios de jardinería desde sus teléfonos, replicando las funcionalidades de la web.
+
 ### Objetivos Específicos:
-* Acceso Seguro: Implementar un sistema de login seguro para que los usuarios puedan acceder a sus cuentas desde cualquier dispositivo.
-* Agendamiento de Servicios: Facilitar el proceso de búsqueda y agendamiento de servicios de jardinería a través de la app.
-* Gestión de Servicios Contratados: Permitir a los usuarios gestionar sus servicios contratados (pagar, cancelar, reagendar) desde su dispositivo móvil.
-* Interfaz de Usuario Optimizada: Proporcionar una interfaz fácil de usar, que ofrezca una experiencia fluida e intuitiva para todo tipo de usuarios.
+- **Acceso Seguro**: Implementar un sistema de **login** que permita a los usuarios acceder de forma segura desde cualquier dispositivo.
+- **Agendamiento de Servicios**: Facilitar el proceso de búsqueda y reserva de servicios desde la app.
+- **Gestión de Servicios Contratados**: Permitir a los usuarios gestionar servicios ya contratados, incluyendo opciones para cancelar, reagendar o dejar comentarios.
+- **Interfaz Optimizada**: Proporcionar una interfaz sencilla y fluida, mejorando la experiencia del usuario móvil.
+
 ### Metodología de Trabajo:
-Para garantizar un desarrollo ordenado y eficiente, seguimos la metodología ágil Scrum. Este enfoque nos permite organizar el proyecto en sprints cortos, de manera que cada funcionalidad se implemente y se entregue de manera incremental. Cada sprint tiene una duración específica y concluye con una entrega funcional que es revisada y validada. La colaboración y comunicación constante entre los desarrolladores son claves para adaptarnos a los posibles cambios durante el proceso de desarrollo.
-### Tecnologías Utilizadas:
-* Ionic Framework: Para crear aplicaciones móviles nativas en iOS y Android con un solo código base.
-* Capacitor: Facilita el acceso a las funcionalidades nativas del dispositivo (Haptics, Keyboard, StatusBar).
-* Vue.js y Vue Router: Utilizados para la construcción de la interfaz y la gestión de rutas en la aplicación.
-* Tailwind CSS: Framework CSS que ayuda a diseñar interfaces rápidas y responsivas mediante clases utilitarias.
-* TypeScript: Añade tipado estático a JavaScript, mejorando la robustez y el mantenimiento del código.
-* Vite: Herramienta de desarrollo rápida que optimiza el flujo de trabajo para Vue y TypeScript.
-* Node.js y Express: El backend, construido en Node.js, recibe peticiones desde la aplicación móvil a través de una API REST.
-* Cypress y Vitest: Pruebas end-to-end con Cypress y unitarias con Vitest para garantizar la calidad del código.
-### API del Backend
-La aplicación se comunica con una API construida en Node.js y Express para autenticación, gestión de servicios y acceso a datos.
-ESLint: Herramienta para mantener la calidad y consistencia del código, usando una base de datos no relacional orientada a documentos en MongoDB.
-### Principales funcionalidades:
-* Login de usuarios.
-* Visualización y agendamiento de servicios.
-* Gestión de perfil de usuario.
-* Consultar y gestionar los servicios contratados.
-## 2. Control de Versiones
->[!TIP]
-Git y GitHub son las herramientas seleccionadas para el control de versiones. Se utiliza el flujo de trabajo Git Flow para garantizar una entrega ordenada y estable del código.
+El proyecto se gestiona utilizando la metodología ágil **Scrum**, organizada en sprints que garantizan entregas funcionales en cada iteración. La comunicación constante y las reuniones de revisión permiten adaptarse a cambios durante el proceso de desarrollo.
+
+## 2. Herramienta de Control de Versiones
+
+>[!TIP]  
+El proyecto utiliza **Git** y **GitHub** para el control de versiones, utilizando el flujo de trabajo **Git Flow**, que garantiza un desarrollo ordenado y estable.
 
 ### Estructura de Ramas:
-* Main: Contiene el código estable y en producción.
-* Develop: Integra las nuevas funcionalidades en fase de pruebas.
-* Feature Branches: Se crean ramas individuales para el desarrollo de nuevas funcionalidades o correcciones (feature/nueva-funcionalidad).
+- **Main**: Rama principal que contiene el código en producción.
+- **Develop**: Rama de desarrollo donde se integran las nuevas funcionalidades.
+- **Feature Branches**: Ramas individuales creadas para nuevas características o correcciones.
+
+### Flujo de Trabajo:
+- Se utiliza **Git Flow** para la creación, revisión y fusión de ramas. Cada desarrollador trabaja en su rama **feature** (por ejemplo, `feature/agendar-servicios`), luego se integran en **develop** para pruebas y, finalmente, en **main** para el despliegue en producción.
+
 ### Clonar el repositorio:
-`git clone https://github.com/rodrigo3829l/movil_user_mygardenllc.git`
->[!CAUTION]
->Asegúrate de que trabajas en la rama correcta antes de realizar cambios o hacer un merge.
+```bash
+git clone https://github.com/rodrigo3829l/movil_user_mygardenllc.git
+```
+>[!CAUTION]  
+Asegúrate de trabajar en la rama correcta antes de realizar cambios o hacer un merge.
 
 ## 3. Estrategia de Versionamiento
->[!NOTE]
-Para asegurar un control preciso de las versiones, usamos versionamiento semántico siguiendo el esquema major.minor.patch:
-* Major: Cambios importantes que rompen la compatibilidad.
-* Minor: Nuevas funcionalidades que no afectan la compatibilidad.
-* Patch: Correcciones o mejoras menores.
->
-Todas las feature branches se revisan y fusionan en develop. Tras las pruebas en staging, se integran en main para su despliegue en producción.
+
+>[!NOTE]  
+Para asegurar un control preciso de las versiones, se utiliza **versionamiento semántico** siguiendo el esquema **major.minor.patch**:
+
+- **Major**: Cambios que rompen compatibilidad con versiones anteriores.
+- **Minor**: Nuevas funcionalidades que no afectan la compatibilidad.
+- **Patch**: Correcciones menores o mejoras.
+
+Las **feature branches** se revisan y fusionan en **develop**. Tras las pruebas en **staging**, los cambios se integran en **main** para su despliegue en producción.
 
 ## 4. Estrategia de Despliegue
->[!IMPORTANT]
-La estrategia de despliegue seleccionada es el despliegue directo. Cada cambio pasa por entornos claramente definidos:
-* Desarrollo: Las ramas feature se prueban localmente o en servidores de desarrollo.
-* Staging (Pre-producción): La rama develop se despliega aquí para realizar pruebas antes de llevar los cambios a producción.
-* Producción: Solo la rama main se despliega en el entorno de producción, asegurando estabilidad.
-* El proceso de CI/CD automatiza el despliegue en estos entornos, reduciendo el riesgo de errores.
 
-## 5. Instrucciones para Clonar y Ejecutar el Proyaecto
+>[!IMPORTANT]  
+Se seleccionó una estrategia de **despliegue directo**. Los cambios pasan por los siguientes entornos:
+
+- **Desarrollo**: Las ramas **feature** se prueban localmente o en servidores de desarrollo.
+- **Staging (Pre-producción)**: La rama **develop** se despliega para realizar pruebas antes de llevar los cambios a **producción**.
+- **Producción**: Solo la rama **main** se despliega en producción, garantizando la estabilidad.
+
+El proceso de **CI/CD** automatiza el despliegue en estos entornos, minimizando el riesgo de errores.
+
+## 5. Instrucciones para Clonar y Ejecutar el Proyecto
+
 ### Clonar el repositorio:
-`git clone https://github.com/rodrigo3829l/movil_user_mygardenllc.git`
+```bash
+git clone https://github.com/rodrigo3829l/movil_user_mygardenllc.git
+```
+
 ### Instalar dependencias:
-`npm install`
-##Ejecutar el proyecto localmente:
-`ionic serve`
->[!CAUTION]
-Asegúrate de tener Ionic instalado correctamente en tu entorno local antes de ejecutar el proyecto.
+```bash
+npm install
+```
+
+### Ejecutar el proyecto localmente:
+```bash
+ionic serve
+```
+>[!CAUTION]  
+Asegúrate de tener **Ionic** correctamente instalado antes de ejecutar el proyecto.
+
+## 6. Proceso para la Creación y Seguimiento de Issues
+
+>[!TIP]  
+Se utiliza **Jira** como la herramienta principal para la gestión de **issues**. El proceso de seguimiento de tareas sigue estos pasos:
+
+1. **Creación**: Cada issue se crea con un título descriptivo y una descripción clara de la tarea.
+2. **Asignación**: Los issues se asignan según las habilidades de cada desarrollador.
+3. **Seguimiento**: Los estados de los issues incluyen **To Do**, **In Progress**, **Review** y **Done**.
+
+### Flujo de Trabajo:
+Este flujo de trabajo asegura un seguimiento claro de cada tarea desde su creación hasta su cierre.
+
+## 7. Estrategia de Comunicación
+
+Para asegurar la comunicación eficiente entre los miembros del equipo, se implementa la siguiente estrategia:
+
+- **Plataforma de Gestión**: Jira es la principal herramienta para la planificación y seguimiento de tareas.
+- **Mensajería**: Se utilizan herramientas como **WhatsApp** para la comunicación instantánea.
+- **Reuniones**: Se realizan **reuniones semanales** de seguimiento y reuniones diarias (**daily stand-ups**) para revisar el progreso y discutir posibles bloqueos.
+
