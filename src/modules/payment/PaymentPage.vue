@@ -122,13 +122,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, watch } from 'vue';
+import { defineComponent, ref, computed, onMounted, watch, nextTick } from 'vue';
 import { IonPage, IonContent, IonToolbar, IonTitle, IonList, IonRadioGroup, IonItem, IonRadio, IonButton, IonProgressBar } from '@ionic/vue';
 import api from '@/axios/axios';
 import { useRoute, useRouter } from 'vue-router';
 import { loadStripe, StripeCardElement } from '@stripe/stripe-js';
-import { nextTick } from 'vue';
 import { Preferences } from '@capacitor/preferences';
+
 export default defineComponent({
   components: {
     IonPage,
@@ -145,227 +145,104 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const router = useRouter();
-    const serviceData = ref(null);
+    const serviceData = ref<any>(null);
     const selectedPercentage = ref('50%');
     const selectedPaymentMethod = ref('');
     const hide50PercentOption = ref(false);
     const stripe = ref<any>(null);
     const cardElement = ref<StripeCardElement | null>(null);
     const paymentRequest = ref<any>(null);
-    const loading = ref(true); // Variable para el estado de carga
+    const loading = ref(true);
 
-    const payNowAmount = computed(() => {
-      if (!serviceData.value) {
-        return 0; // Si no hay datos de servicio, devuelve 0
-      }
-      return selectedPercentage.value === '50%' ? (serviceData.value.quote / 2).toFixed(2) : serviceData.value.pending.toFixed(2);
-    });
-
+    const payNowAmount = computed(() =>
+      selectedPercentage.value === '50%'
+        ? (serviceData.value?.quote / 2).toFixed(2)
+        : serviceData.value?.pending.toFixed(2)
+    );
 
     const fetchServiceData = async () => {
       try {
         const { data } = await api.get(`/schedule/scheduleservice/${route.params.id}`);
-        console.log(data)
         serviceData.value = data.scheduledService;
-        console.log(serviceData.value.quote)
-
-        if (serviceData.value.pending <= serviceData.value.quote / 2) {
-          hide50PercentOption.value = true;
-          selectedPercentage.value = '100%';
-        }
-
-        loading.value = false; // Desactivar la barra de progreso cuando la petición se complete
+        hide50PercentOption.value = serviceData.value.pending <= serviceData.value.quote / 2;
+        selectedPercentage.value = hide50PercentOption.value ? '100%' : '50%';
       } catch (error) {
         console.error('Error fetching service data:', error);
-        loading.value = false; // Desactivar la barra de progreso en caso de error
+      } finally {
+        loading.value = false;
       }
     };
 
-    // Stripe payment logic
-    onMounted(async () => {
-      stripe.value = await loadStripe("pk_test_51Q5aH7AXipH64sKmHbNWE8XRQ8syr2gEoTQg6Tnd6VDVjr771xrdqLhtKTGK4jOekNhZUTjazELF92jF0fqNHJHa00xPThmI9F");
+    const setupStripe = async () => {
+      stripe.value = await loadStripe('pk_test_51Q5aH7...');
       if (stripe.value) {
+        await nextTick();
         const elements = stripe.value.elements();
-        cardElement.value = elements.create("card");
-        cardElement.value?.mount("#card-element");
-
-        paymentRequest.value = stripe.value.paymentRequest({
-          country: "US",
-          currency: "usd",
-          total: {
-            label: "Pago por servicio",
-            amount: parseFloat(payNowAmount.value) * 100, // Monto dinámico en centavos
-          },
-          requestPayerName: true,
-          requestPayerEmail: true,
-        });
-
-        const prButton = elements.create("paymentRequestButton", {
-          paymentRequest: paymentRequest.value,
-        });
-
-        paymentRequest.value.canMakePayment().then((result: any) => {
-          const paymentRequestButton = document.getElementById("payment-request-button");
-          if (result && paymentRequestButton) {
-            prButton.mount("#payment-request-button");
-          } else if (paymentRequestButton) {
-            paymentRequestButton.style.display = "none";
-          }
-        });
+        cardElement.value = elements.create('card');
+        const cardContainer = document.getElementById('card-element');
+        cardContainer ? cardElement.value.mount('#card-element') : console.error('No #card-element found');
       }
-    });
-
-
+    };
 
     const handleStripePayment = async () => {
-      const { paymentMethod, error } = await stripe.value.createPaymentMethod({
-        type: "card",
-        card: cardElement.value!,
-      });
-
-      if (error) {
-        console.error("Error en el pago:", error);
-      } else {
-        sendPaymentToBackend(paymentMethod, parseFloat(payNowAmount.value)); // Enviar la cantidad correcta
-      }
-    };
-    const setupStripe = async () => {
-      stripe.value = await loadStripe("pk_test_51Q5aH7AXipH64sKmHbNWE8XRQ8syr2gEoTQg6Tnd6VDVjr771xrdqLhtKTGK4jOekNhZUTjazELF92jF0fqNHJHa00xPThmI9F");
-      if (stripe.value) {
-        // Utilizamos nextTick para esperar a que el DOM esté completamente actualizado.
-        await nextTick(); 
-
-        const elements = stripe.value.elements();
-        cardElement.value = elements.create("card");
-
-        // Asegúrate de que el elemento existe en el DOM antes de montarlo
-        const cardElementContainer = document.getElementById('card-element');
-        if (cardElementContainer) {
-          cardElement.value.mount("#card-element");
-          console.log("Stripe card element mounted:", cardElement.value);
-        } else {
-          console.error("El contenedor de #card-element no existe.");
-        }
+      try {
+        const { paymentMethod, error } = await stripe.value.createPaymentMethod({ type: 'card', card: cardElement.value! });
+        if (error) throw error;
+        await sendPaymentToBackend(paymentMethod);
+      } catch (error) {
+        console.error('Payment error:', error);
       }
     };
 
-
-
-    const updatePaymentRequest = () => {
-      if (paymentRequest.value) {
-        paymentRequest.value.update({
-          total: {
-            label: 'Pago por servicio',
-            amount: parseFloat(payNowAmount.value) * 100, // Convertir a centavos
-          },
-        });
-      }
-    };
-
-    const sendPaymentToBackend = async (paymentData: any, mount: number) => {
-      // Obtener el token desde Preferences
+    const sendPaymentToBackend = async (paymentData: any) => {
       try {
         const { value: token } = await Preferences.get({ key: 'token' });
-      
-        // Obtener el scheduleService desde los parámetros de la ruta
-        const scheduleService = route.params.id;
-
-        // Construir el objeto de datos para enviar al backend
         const paymentDetails = {
-          user: token, // Utilizamos el token que viene de Preferences
-          mount, // Monto dinámico enviado (ya calculado anteriormente)
-          scheduleService, // ID del servicio agendado desde la ruta
-          type: '65d9c9eda4ee265c1c861501', // Tipo de pago (Stripe o PayPal)
-          paypalOrderId: paymentData.id, // ID del PaymentMethod o OrderId (de Stripe o PayPal)
-          paypalPayerId :  paymentData.type || "PayPal"
+          user: token,
+          mount: parseFloat(payNowAmount.value),
+          scheduleService: route.params.id,
+          type: '65d9c9eda4ee265c1c861501',
+          paypalOrderId: paymentData.id
         };
-
-        // Enviar los datos al backend o hacer lo necesario con ellos
-        console.log(paymentDetails);
-
         const { data } = await api.post('/pays/pay', paymentDetails);
-        console.log(data)
-        if (data.success) {
-          router.push(`/my-service/${route.params.id}`);
-        }else{
-          alert('Payment not efectuaded')
-        }
+        data.success ? router.push(`/my-service/${route.params.id}`) : alert('Payment failed');
       } catch (error) {
-        console.log(error)
+        console.error('Error sending payment:', error);
       }
     };
 
-    // const sendPaymentToBackend = (paymentData: any, amount: number) => {
-    //   const data = {
-    //     user: "userId",
-    //     amount, // Monto dinámico enviado
-    //     scheduleService: "Servicio de ejemplo",
-    //     type: paymentData.type || "PayPal",
-    //     paymentId: paymentData.id,
-    //   };
-    //   console.log(data);
-    // };
-
-    const loadPayPalScript = () => {
-      return new Promise<void>((resolve) => {
+    const loadPayPalScript = () =>
+      new Promise<void>((resolve) => {
         const script = document.createElement('script');
-        script.src = 'https://www.paypal.com/sdk/js?client-id=AfOuWCGm02PBc-nT5eA3DrWwE4_YT-kqE7G0Vd_RTKIlHpDWpiE3Qui9UMxUkRxPdUkMaGJj8m_4Eg1X';
-        script.addEventListener('load', () => resolve());
+        script.src = 'https://www.paypal.com/sdk/js?client-id=AfOuWCGm02PBc...';
+        script.onload = () => resolve();
         document.body.appendChild(script);
       });
-    };
 
     const renderPayPalButton = async () => {
       const paypal = (window as any).paypal;
-      if (!paypal) {
-        console.error("PayPal SDK not loaded.");
-        return;
-      }
-
+      if (!paypal) return console.error('PayPal SDK not loaded');
       paypal.Buttons({
-        createOrder: (data: any, actions: any) => {
-          return actions.order.create({
-            purchase_units: [{
-              amount: {
-                currency_code: 'USD',
-                value: payNowAmount.value // Monto dinámico
-              }
-            }]
-          });
-        },
+        createOrder: (data: any, actions: any) =>
+          actions.order.create({ purchase_units: [{ amount: { currency_code: 'USD', value: payNowAmount.value } }] }),
         onApprove: async (data: any, actions: any) => {
           const order = await actions.order.capture();
-          sendPaymentToBackend({ type: 'PayPal', ...order }, parseFloat(payNowAmount.value)); // Enviar el monto dinámico al backend
+          await sendPaymentToBackend({ type: 'PayPal', ...order });
         },
-        onError: (err: any) => {
-          console.error("Error en PayPal", err);
-        }
+        onError: (err: any) => console.error('PayPal Error:', err)
       }).render('#paypal-button-container');
     };
 
     watch(selectedPaymentMethod, async (newMethod) => {
-      if (newMethod === "paypal") {
+      if (newMethod === 'paypal') {
         await loadPayPalScript();
-        setTimeout(() => {
-          renderPayPalButton();
-        }, 100);
+        setTimeout(() => renderPayPalButton(), 100);
+      } else if (newMethod === 'card') {
+        await setupStripe();
       }
     });
 
-    watch(payNowAmount, () => {
-      updatePaymentRequest(); // Actualizar el monto de pago dinámicamente
-    });
-
-    watch(selectedPaymentMethod, async (newMethod) => {
-      if (newMethod === "card") {
-        await setupStripe();  // Ejecuta Stripe solo si el método de pago seleccionado es tarjeta
-      }
-    });
-
-    watch(() => route.params.id, () => {
-      fetchServiceData();
-    });
-
+    watch(() => route.params.id, fetchServiceData);
 
     onMounted(() => {
       fetchServiceData();
@@ -377,22 +254,14 @@ export default defineComponent({
       selectedPaymentMethod,
       payNowAmount,
       handleStripePayment,
-      loading, // Estado de carga
+      loading,
       serviceData,
-      hide50PercentOption,
-      stripe,
-      cardElement,
-      paymentRequest,
-      fetchServiceData,
-      sendPaymentToBackend,
-      loadPayPalScript,
-      renderPayPalButton,
-      setupStripe,
-      updatePaymentRequest
+      hide50PercentOption
     };
-  },
+  }
 });
 </script>
+
 
 <style scoped>
 .custom-radio-item {
