@@ -426,7 +426,7 @@ jobs:
 
           subject: CI/CD Pipeline Notification - ${{ github.ref_name }}
           from: CI/CD Bot <20210658@uthh.edu.mx>
-          to: ${{ secrets.EMAIL_TO }}
+          to: ${{ secrets.SMTP_USERNAME }}
 
           html_body: |
             <html lang="es">
