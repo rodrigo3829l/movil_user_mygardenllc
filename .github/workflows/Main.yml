@@ -116,7 +116,7 @@ jobs:
   #         git push origin main --force
 
   sonar-scan:
-    needs: format-check
+    needs: lint
     # if: ${{ needs.unit-integration-tests.outputs.jest_exit_code == '0' }}
     runs-on: ubuntu-latest
     steps:
