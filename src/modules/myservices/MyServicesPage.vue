@@ -3,7 +3,11 @@
     <IonContent fullscreen>
       <!-- Flecha hacia atrás -->
       <div class="back-button">
-        <IonIcon name="arrow-back-outline" class="text-black text-2xl" @click="goBack" />
+        <IonIcon
+          name="arrow-back-outline"
+          class="text-black text-2xl"
+          @click="goBack"
+        />
       </div>
 
       <!-- Toolbar -->
@@ -12,7 +16,10 @@
       </IonToolbar>
 
       <!-- Searchbar -->
-      <IonSearchbar v-model="searchQuery" placeholder="Search services"></IonSearchbar>
+      <IonSearchbar
+        v-model="searchQuery"
+        placeholder="Search services"
+      ></IonSearchbar>
 
       <!-- Filtros por status -->
       <div class="filters">
@@ -37,9 +44,9 @@
 
       <!-- Lista de servicios con paginación -->
       <IonList v-if="loading">
-            <!-- Mostrar 5 skeletons -->
-            <SkeletonLoader v-for="n in 5" :key="n" />
-        </IonList>
+        <!-- Mostrar 5 skeletons -->
+        <SkeletonLoader v-for="n in 5" :key="n" />
+      </IonList>
       <IonList v-else>
         <MyServiceComponent
           v-for="(service, index) in paginatedServices"
@@ -50,14 +57,19 @@
 
       <!-- Paginación -->
       <div class="pagination-controls">
-        <button :disabled="currentPage === 1" @click="previousPage" class="pagination-arrow">
+        <button
+          :disabled="currentPage === 1"
+          @click="previousPage"
+          class="pagination-arrow"
+        >
           <IonIcon name="arrow-back-outline"></IonIcon>
         </button>
 
         <button
           v-if="currentPage > 2"
           @click="changePage(1)"
-          class="pagination-number">
+          class="pagination-number"
+        >
           1
         </button>
 
@@ -67,7 +79,8 @@
           v-for="page in paginationRange"
           :key="page"
           @click="changePage(page)"
-          :class="['pagination-number', { active: currentPage === page }]">
+          :class="['pagination-number', { active: currentPage === page }]"
+        >
           {{ page }}
         </button>
 
@@ -76,11 +89,16 @@
         <button
           v-if="currentPage < totalPages - 2"
           @click="changePage(totalPages)"
-          class="pagination-number">
+          class="pagination-number"
+        >
           {{ totalPages }}
         </button>
 
-        <button :disabled="currentPage === totalPages" @click="nextPage" class="pagination-arrow">
+        <button
+          :disabled="currentPage === totalPages"
+          @click="nextPage"
+          class="pagination-arrow"
+        >
           <IonIcon name="arrow-forward-outline"></IonIcon>
         </button>
       </div>
@@ -88,7 +106,13 @@
   </IonPage>
 </template>
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, defineAsyncComponent } from 'vue';
+import {
+  defineComponent,
+  ref,
+  computed,
+  onMounted,
+  defineAsyncComponent,
+} from "vue";
 import {
   IonPage,
   IonContent,
@@ -100,12 +124,14 @@ import {
   IonList,
   IonItem,
   IonIcon,
-} from '@ionic/vue';
-import MyServiceComponent from '@/components/MyServiceComponent.vue';
-import api from '@/axios/axios';
-import { Preferences } from '@capacitor/preferences';
-import { useRouter } from 'vue-router';
-const SkeletonLoader = defineAsyncComponent(() => import('../../components/SkeletonService.vue'));
+} from "@ionic/vue";
+import MyServiceComponent from "@/components/MyServiceComponent.vue";
+import api from "@/axios/axios";
+import { Preferences } from "@capacitor/preferences";
+import { useRouter } from "vue-router";
+const SkeletonLoader = defineAsyncComponent(
+  () => import("../../components/SkeletonService.vue"),
+);
 export default defineComponent({
   components: {
     MyServiceComponent,
@@ -119,18 +145,18 @@ export default defineComponent({
     IonList,
     IonItem,
     IonIcon,
-    SkeletonLoader
+    SkeletonLoader,
   },
   setup() {
     const router = useRouter();
     const services = ref([]);
-    const searchQuery = ref('');
-    const selectedStatus = ref('all');
+    const searchQuery = ref("");
+    const selectedStatus = ref("all");
     const currentPage = ref(1);
     const servicesPerPage = 5;
-    const loading = ref(true)
+    const loading = ref(true);
     const actionSheetOptions = {
-      header: 'Choose a service status',
+      header: "Choose a service status",
     };
 
     // Función para volver a la página anterior
@@ -140,28 +166,28 @@ export default defineComponent({
 
     const fetchServices = async () => {
       try {
-        const { value: token } = await Preferences.get({ key: 'token' });
-        const { value: rol } = await Preferences.get({ key: 'rol' });
+        const { value: token } = await Preferences.get({ key: "token" });
+        const { value: rol } = await Preferences.get({ key: "rol" });
 
         if (!token) {
-          console.error('No token found');
+          console.error("No token found");
           return;
         }
 
         const { data } = await api({
-          method: 'GET',
-          url: '/schedule/userservices',
+          method: "GET",
+          url: "/schedule/userservices",
           headers: {
-            Authorization: 'Bearer ' + token,
-            rol: rol || 'client',
+            Authorization: "Bearer " + token,
+            rol: rol || "client",
           },
         });
 
         services.value = data.services;
       } catch (error) {
-        console.error('Error fetching services:', error);
-      } finally{
-        loading.value = false
+        console.error("Error fetching services:", error);
+      } finally {
+        loading.value = false;
       }
     };
 
@@ -170,13 +196,17 @@ export default defineComponent({
       let filtered = services.value;
 
       if (searchQuery.value) {
-        filtered = filtered.filter(service =>
-          service.service.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+        filtered = filtered.filter((service) =>
+          service.service.name
+            .toLowerCase()
+            .includes(searchQuery.value.toLowerCase()),
         );
       }
 
-      if (selectedStatus.value !== 'all') {
-        filtered = filtered.filter(service => service.status === selectedStatus.value);
+      if (selectedStatus.value !== "all") {
+        filtered = filtered.filter(
+          (service) => service.status === selectedStatus.value,
+        );
       }
 
       return filtered;
@@ -238,7 +268,7 @@ export default defineComponent({
       nextPage,
       paginationRange,
       actionSheetOptions,
-      loading
+      loading,
     };
   },
 });
@@ -299,7 +329,7 @@ export default defineComponent({
 
 .ellipsis {
   margin: 0 5px;
-  color: #86A286;
+  color: #86a286;
 }
 
 .select-container {

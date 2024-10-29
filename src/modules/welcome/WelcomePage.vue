@@ -1,17 +1,17 @@
 <template>
   <IonPage>
     <IonContent fullscreen>
-
       <!-- Uso de IonGrid para manejar el layout de la pantalla completa -->
       <IonGrid>
         <IonRow>
-
           <!-- Primer Columna: Imagen de fondo con texto -->
           <IonCol size="12" class="welcome-section">
             <div class="background-image">
               <IonText>
                 <h2 class="welcome-title">Welcome to My Garden LLC</h2>
-                <p class="welcome-subtitle">Your trusted gardening and landscaping company.</p>
+                <p class="welcome-subtitle">
+                  Your trusted gardening and landscaping company.
+                </p>
               </IonText>
             </div>
           </IonCol>
@@ -19,19 +19,27 @@
           <!-- Segunda Columna: Texto corto -->
           <IonCol size="12" class="ion-text-center">
             <IonText>
-              <p class="description-text">Your outdoor paradise, our expertise.</p>
+              <p class="description-text">
+                Your outdoor paradise, our expertise.
+              </p>
             </IonText>
           </IonCol>
 
           <!-- Tercera Columna: Logo centrado -->
           <IonCol size="12" class="ion-text-center">
-            <img src="https://res.cloudinary.com/dui4i9f4e/image/upload/v1709677547/logos/jb7aaqsuesjivzmiz5mg.png" alt="My Garden Logo" class="logo-image">
+            <img
+              src="https://res.cloudinary.com/dui4i9f4e/image/upload/v1709677547/logos/jb7aaqsuesjivzmiz5mg.png"
+              alt="My Garden Logo"
+              class="logo-image"
+            />
           </IonCol>
 
           <!-- Cuarta Columna: Otro texto corto -->
           <IonCol size="12" class="ion-text-center">
             <IonText>
-              <p class="description-text">Transforming your garden dreams into reality.</p>
+              <p class="description-text">
+                Transforming your garden dreams into reality.
+              </p>
             </IonText>
           </IonCol>
 
@@ -39,28 +47,38 @@
           <IonCol size="12" class="ion-text-center">
             <!-- Indicadores de Paginación -->
             <div class="pagination-indicator">
-              <IonIcon name="ellipse" class="pagination-circle active"></IonIcon>
+              <IonIcon
+                name="ellipse"
+                class="pagination-circle active"
+              ></IonIcon>
               <IonIcon name="ellipse" class="pagination-circle"></IonIcon>
               <IonIcon name="ellipse" class="pagination-circle"></IonIcon>
             </div>
-            <br>
+            <br />
             <!-- Botón de Siguiente -->
             <IonButton expand="block" @click="goToNextPage">
               Let's get started
             </IonButton>
           </IonCol>
-
         </IonRow>
       </IonGrid>
-
     </IonContent>
   </IonPage>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { IonPage, IonContent, IonButton, IonCol, IonRow, IonText, IonIcon, IonGrid } from '@ionic/vue';
-import { useRouter } from 'vue-router'; // Para la navegación
+import { defineComponent } from "vue";
+import {
+  IonPage,
+  IonContent,
+  IonButton,
+  IonCol,
+  IonRow,
+  IonText,
+  IonIcon,
+  IonGrid,
+} from "@ionic/vue";
+import { useRouter } from "vue-router"; // Para la navegación
 
 export default defineComponent({
   components: {
@@ -71,14 +89,14 @@ export default defineComponent({
     IonRow,
     IonText,
     IonIcon,
-    IonGrid
+    IonGrid,
   },
   methods: {
     goToNextPage() {
       // Función para navegar a la siguiente página
-      this.$router.push('/next-page');
-    }
-  }
+      this.$router.push("/next-page");
+    },
+  },
 });
 </script>
 
@@ -86,7 +104,7 @@ export default defineComponent({
 /* Estilos para la pantalla de bienvenida */
 
 .welcome-section {
-  background-image: url('https://res.cloudinary.com/dui4i9f4e/image/upload/v1697990267/logos/nhqsptfuorp4dkmutlcm.jpg');
+  background-image: url("https://res.cloudinary.com/dui4i9f4e/image/upload/v1697990267/logos/nhqsptfuorp4dkmutlcm.jpg");
   background-size: cover;
   background-position: center;
   height: 300px;
@@ -111,7 +129,7 @@ export default defineComponent({
 
 .description-text {
   font-size: 1.2rem;
-  color: #86A286; /* Color verde claro */
+  color: #86a286; /* Color verde claro */
   text-align: center;
   margin: 10px 0;
 }

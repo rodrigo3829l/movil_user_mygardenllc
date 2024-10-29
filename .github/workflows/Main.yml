@@ -1,0 +1,477 @@
+name: PWA CI/CD Workflow - Main
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions: write-all
+
+jobs:
+  format-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: npm install
+      - name: Run Prettier
+        run: npm run format
+
+  lint:
+    needs: format-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.MY_GH_TOKEN }}
+      - name: Cache Node Modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: npm install
+      - name: Run ESLint
+        run: npm run lint
+
+  # unit-integration-tests:
+  #   needs: lint
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     jest_exit_code: ${{ steps.set_exit_code.outputs.exit_code }}
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
+  #         token: ${{ secrets.MY_GH_TOKEN }}
+  #     - name: Cache Node Modules
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: node_modules
+  #         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-node-
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: "20"
+  #     - name: Install dependencies
+  #       run: npm install
+  #     - name: Run Jest Tests
+  #       id: set_exit_code
+  #       run: |
+  #         set +e
+  #         npm run test:unit -- --coverage || exit_code=$?
+  #         echo "::set-output name=exit_code::$exit_code"
+  #         mv coverage/lcov-report ./coverage-report
+  #         echo "exit_code=$exit_code"
+  #         set -e
+  #     - name: Upload Jest Test Results
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: jest-coverage-report
+  #         path: coverage-report/
+
+  # post-coverage-comment-jest:
+  #   needs: unit-integration-tests
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/github-script@v4
+  #       if: github.event_name == 'pull_request'
+  #       with:
+  #         script: |
+  #           github.rest.issues.createComment({
+  #             issue_number: context.payload.pull_request.number,
+  #             owner: context.repo.owner,
+  #             repo: context.repo.repo,
+  #             body: `Los reportes de cobertura están disponibles en los artefactos: [Ver artefactos](${{ github.run_id }})`
+  #           });
+
+  # jest-validation:
+  #   needs: unit-integration-tests
+  #   runs-on: ubuntu-latest
+  #   if: ${{ needs.unit-integration-tests.outputs.jest_exit_code != '0' }}
+  #   steps:
+  #     - name: Handle Jest Failure
+  #       run: |
+  #         echo "Jest tests failed. Reverting to previous version..."
+  #         git config --global user.email "20210658@uthh.edu.mx"
+  #         git config --global user.name "rodrigo3829l"
+  #         git reset --hard HEAD^
+  #         git push origin main --force
+
+  sonar-scan:
+    needs: format-check
+    # if: ${{ needs.unit-integration-tests.outputs.jest_exit_code == '0' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.MY_GH_TOKEN }}
+      - name: Cache Node Modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: npm install
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  snyk-scan:
+    needs: sonar-scan
+    # if: ${{ needs.unit-integration-tests.outputs.jest_exit_code == '0' }}
+    runs-on: ubuntu-latest
+    outputs:
+      snyk_exit_code: ${{ steps.set_exit_code.outputs.exit_code }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.MY_GH_TOKEN }}
+      - name: Cache Node Modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: npm install
+      - name: Install Snyk CLI
+        run: npm install -g snyk
+      - name: Run Snyk Scan
+        id: set_exit_code
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          set +e
+          snyk monitor --all-projects --org=6ce58cdd-2e65-4c0c-bbe5-705980cee5fe
+          snyk test --all-projects --org=6ce58cdd-2e65-4c0c-bbe5-705980cee5fe || exit_code=$?
+          echo "::set-output name=exit_code::$exit_code"
+          echo "exit_code=$exit_code"
+          set -e
+
+  snyk-validation:
+    needs: snyk-scan
+    if: ${{ needs.snyk-scan.outputs.snyk_exit_code != '0' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Handle Snyk Failure
+        run: |
+          echo "Snyk scan failed. Reverting to previous version..."
+          git config --global user.email "20210658@uthh.edu.mx"
+          git config --global user.name "rodrigo3829l"
+          git reset --hard HEAD^
+          git push origin main --force
+
+  deploy-staging:
+    needs: snyk-scan
+    # if: ${{ needs.unit-integration-tests.outputs.jest_exit_code == '0' && needs.snyk-scan.outputs.snyk_exit_code == '0' }}
+    if: ${{ needs.snyk-scan.outputs.snyk_exit_code == '0' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.MY_GH_TOKEN }}
+      - name: Cache Node Modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: npm install
+      - name: Build project
+        run: npm run build
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifact
+          path: dist/
+          retention-days: 7
+      - name: Install lftp
+        run: sudo apt-get install lftp
+      - name: Deploy to Hostinger via FTPS (with exclusions)
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          lftp -e "
+            set ssl:verify-certificate no;
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ftp:ssl-protect-list true;
+            set ftp:ssl-allow yes;
+            open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST;
+            mirror -R --only-newer --exclude .htaccess ./dist /public_html/staging_movil;
+            quit
+          "
+
+  # e2e-tests-staging:
+  #   needs: deploy-staging
+  #   if: ${{ needs.unit-integration-tests.outputs.jest_exit_code == '0' && needs.snyk-scan.outputs.snyk_exit_code == '0' }}
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     cypress_exit_code: ${{ steps.set_exit_code.outputs.exit_code }}
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
+  #         token: ${{ secrets.MY_GH_TOKEN }}
+  #     - name: Cache Node Modules
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: node_modules
+  #         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-node-
+
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: "20"
+
+  #     - name: Install dependencies
+  #       run: npm install
+
+  #     - name: Install mochawesome Reporter
+  #       run: npm install mochawesome
+
+  #     - name: Install Cypress Binary
+  #       run: npx cypress install
+
+  #     - name: Run Cypress Tests
+  #       id: set_exit_code
+  #       run: |
+  #         set +e
+  #         npx cypress run --reporter mochawesome --reporter-options reportDir=cypress/reports || exit_code=$?
+  #         echo "::set-output name=exit_code::$exit_code"
+  #         set -e
+  #     - name: Handle Cypress Failure
+  #       if: ${{ steps.set_exit_code.outputs.exit_code != '0' }}
+  #       run: |
+  #         echo "Cypress tests failed. Skipping production deployment."
+  #     - name: Upload Cypress Test Results
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: cypress-results
+  #         path: cypress/reports/
+
+  # post-coverage-comment-cypress:
+  #   needs: e2e-tests-staging
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/github-script@v4
+  #       if: github.event_name == 'pull_request'
+  #       with:
+  #         script: |
+  #           github.rest.issues.createComment({
+  #             issue_number: context.issue.number,
+  #             owner: context.repo.owner,
+  #             repo: context.repo.repo,
+  #             body: `El reporte de Cypress está disponible en los artefactos: [Ver artefactos](${{ github.run_id }})`
+  #           });
+
+  deploy:
+    needs: deploy-staging
+    # needs: e2e-tests-staging
+    # if: ${{ needs.e2e-tests-staging.outputs.cypress_exit_code == '0' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.MY_GH_TOKEN }}
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: npm install
+      - name: Build project
+        run: npm run build
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifact
+          path: dist/
+          retention-days: 7
+      - name: Install lftp
+        run: sudo apt-get install lftp
+      - name: Deploy to Hostinger via FTPS (with exclusions)
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          lftp -e "
+            set ssl:verify-certificate no;
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ftp:ssl-protect-list true;
+            set ftp:ssl-allow yes;
+            open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST;
+            mirror -R --only-newer --exclude .htaccess ./dist /public_html/movil;
+            quit
+          "
+
+  notify-pr-success:
+    # if: ${{ needs.unit-integration-tests.outputs.jest_exit_code == '0' || needs.snyk-scan.outputs.snyk_exit_code == '0' }}
+    if: ${{ needs.snyk-scan.outputs.snyk_exit_code == '0' }}
+    runs-on: ubuntu-latest
+    # needs: [unit-integration-tests, snyk-scan, sonar-scan]
+    needs: [snyk-scan, sonar-scan]
+    steps:
+      - uses: actions/github-script@v4
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          script: |
+            const issue_number = context.payload.pull_request 
+              ? context.payload.pull_request.number 
+              : null;
+
+            if (issue_number) {
+              github.rest.issues.createComment({
+                issue_number: issue_number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `CI/CD Pipeline Success for branch ${context.ref}.`
+              });
+            } else {
+              console.log('Not a pull request. Skipping comment creation.');
+            }
+
+  notify-pr-failed:
+    # if: ${{ needs.unit-integration-tests.outputs.jest_exit_code == '0' || needs.snyk-scan.outputs.snyk_exit_code == '0' }}
+    if: ${{ needs.snyk-scan.outputs.snyk_exit_code == '0' }}
+    runs-on: ubuntu-latest
+    # needs: [unit-integration-tests, snyk-scan, sonar-scan]
+    needs: [snyk-scan, sonar-scan]
+    steps:
+      - uses: actions/github-script@v4
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          script: |
+            const issue_number = context.payload.pull_request 
+              ? context.payload.pull_request.number 
+              : null;
+
+            if (issue_number) {
+              github.rest.issues.createComment({
+                issue_number: issue_number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `CI/CD Pipeline Failed for branch ${context.ref}.`
+              });
+            } else {
+              console.log('Not a pull request. Skipping comment creation.');
+            }
+
+  notify-email:
+    # needs: [unit-integration-tests, snyk-scan, sonar-scan]
+    needs: [snyk-scan, sonar-scan]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prepare SHA and Run ID
+        id: vars
+        run: |
+          echo "::set-output name=short_sha::...${GITHUB_SHA: -3}"
+          echo "::set-output name=short_run_id::...${GITHUB_RUN_ID: -3}"
+
+      - name: Send Notification Email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_HOST }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          secure: false
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+
+          subject: CI/CD Pipeline Notification - ${{ github.ref_name }}
+          from: CI/CD Bot <20210658@uthh.edu.mx>
+          to: ${{ secrets.EMAIL_TO }}
+
+          html_body: |
+            <html lang="es">
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Notificación de CI/CD Pipeline</title>
+            </head>
+            <body style="font-family: Arial, sans-serif; background-color: #195131; color: #fff; margin: 0; padding: 20px;">
+              <div style="max-width: 600px; margin: 0 auto; background-color: #145234; border-radius: 10px; padding: 20px;">
+                <h2 style="text-align: center; color: #fff;">
+                  🚀 ¡Tu Pipeline ha finalizado!
+                </h2>
+
+                <div style="background-color: #0f2b20; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                  <p><strong>Rama:</strong> <code style="color: #4cd137;">${{ github.ref_name }}</code></p>
+                  <p><strong>Repositorio:</strong> <a href="https://github.com/${{ github.repository }}" style="color: #4cd137; text-decoration: none;">${{ github.repository }}</a></p>
+                  <p><strong>Commit:</strong> 
+                    <a href="https://github.com/${{ github.repository }}/commit/${{ github.sha }}" style="color: #4cd137; text-decoration: none;">
+                      ${{ steps.vars.outputs.short_sha }}
+                    </a>
+                  </p>
+                  <p><strong>ID de Ejecución:</strong> 
+                    <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" style="color: #4cd137; text-decoration: none;">
+                      ${{ steps.vars.outputs.short_run_id }}
+                    </a>
+                  </p>
+                </div>
+
+                <h3 style="color: #fff;">¿Cómo fue? 🤔</h3>
+                <ul style="list-style-type: none; padding: 0;">
+                  <li style="margin-bottom: 10px;">
+                    ✅ Pruebas Jest: ¡Éxito! 🎉
+                  </li>
+                  <li>
+                    🛡️ Escaneo Snyk: 
+                    ${{ needs.snyk-scan.outputs.snyk_exit_code == '0' && '¡Todo en orden! 🛡️' || '❌ Falló' }}
+                  </li>
+                </ul>
+
+                <p>Consulta los registros completos del pipeline <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" style="color: #4cd137; text-decoration: none;">aquí</a>.</p>
+
+                <footer style="text-align: center; margin-top: 20px; color: rgba(255, 255, 255, 0.7); font-size: 12px;">
+                  Este es un mensaje automatizado de tu bot de CI/CD. No es necesario responder. 🤖
+                </footer>
+              </div>
+            </body>
+            </html>

@@ -8,7 +8,11 @@
 
       <!-- Botón de retroceso -->
       <div class="back-button">
-        <IonIcon name="arrow-back-outline" class="text-black text-2xl" @click="goBack" />
+        <IonIcon
+          name="arrow-back-outline"
+          class="text-black text-2xl"
+          @click="goBack"
+        />
       </div>
 
       <!-- Barra de progreso mientras se cargan los datos -->
@@ -32,7 +36,9 @@
           <h3>Personal Information</h3>
           <div class="info-row">
             <p class="info-title">Full Name</p>
-            <p class="info-result">{{ user.name }} {{ user.apellidoP }} {{ user.apellidoM }}</p>
+            <p class="info-result">
+              {{ user.name }} {{ user.apellidoP }} {{ user.apellidoM }}
+            </p>
           </div>
           <div class="info-row">
             <p class="info-title">Date of Birth</p>
@@ -69,14 +75,23 @@
           </div>
           <div class="info-row">
             <p class="info-title">Account Status</p>
-            <ion-icon :name="user.userStatus === 'ENABLED' ? 'ellipse' : 'ellipse-outline'" class="status-icon"></ion-icon>
+            <ion-icon
+              :name="
+                user.userStatus === 'ENABLED' ? 'ellipse' : 'ellipse-outline'
+              "
+              class="status-icon"
+            ></ion-icon>
           </div>
         </div>
 
         <!-- Botones de Ver Servicios y Logout -->
         <div class="button-container">
-          <IonButton expand="block" color="success" @click="viewServices">View Services</IonButton>
-          <IonButton expand="block" color="dark" @click="logout">Logout</IonButton>
+          <IonButton expand="block" color="success" @click="viewServices"
+            >View Services</IonButton
+          >
+          <IonButton expand="block" color="dark" @click="logout"
+            >Logout</IonButton
+          >
         </div>
       </div>
 
@@ -89,15 +104,32 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, defineAsyncComponent } from 'vue';
-import { IonPage, IonContent, IonToolbar, IonTitle, IonButton, IonIcon } from '@ionic/vue';
-import { Preferences } from '@capacitor/preferences'; // Importa Preferences de Capacitor
-import { useRouter } from 'vue-router';
-import api from '@/axios/axios';
-const SkeletonLoader = defineAsyncComponent(() => import('./SkeletonProfile.vue'));
+import { defineComponent, onMounted, ref, defineAsyncComponent } from "vue";
+import {
+  IonPage,
+  IonContent,
+  IonToolbar,
+  IonTitle,
+  IonButton,
+  IonIcon,
+} from "@ionic/vue";
+import { Preferences } from "@capacitor/preferences"; // Importa Preferences de Capacitor
+import { useRouter } from "vue-router";
+import api from "@/axios/axios";
+const SkeletonLoader = defineAsyncComponent(
+  () => import("./SkeletonProfile.vue"),
+);
 
 export default defineComponent({
-  components: { IonPage, IonContent, IonToolbar, IonTitle, IonButton, IonIcon, SkeletonLoader },
+  components: {
+    IonPage,
+    IonContent,
+    IonToolbar,
+    IonTitle,
+    IonButton,
+    IonIcon,
+    SkeletonLoader,
+  },
   setup() {
     const router = useRouter();
     const user = ref<any>(null);
@@ -122,37 +154,37 @@ export default defineComponent({
 
     // Función para redirigir a la página de servicios
     const viewServices = () => {
-      router.push('/services');
+      router.push("/services");
     };
 
     // Función para cerrar sesión
     const logout = async () => {
       await Preferences.clear(); // Borra todos los datos de Preferences
-      router.push('/login');
+      router.push("/login");
     };
 
     // Función para obtener los datos del usuario desde la API
     const fetchUserData = async () => {
-      const { value: token } = await Preferences.get({ key: 'token' }); // Obtén el token desde Preferences
-      const { value: rol } = await Preferences.get({ key: 'rol' }); // Obtén el rol desde Preferences
+      const { value: token } = await Preferences.get({ key: "token" }); // Obtén el token desde Preferences
+      const { value: rol } = await Preferences.get({ key: "rol" }); // Obtén el rol desde Preferences
 
       if (!token) {
-        console.error('No token found');
+        console.error("No token found");
         return;
       }
 
       try {
         const { data } = await api({
-          method: 'GET',
-          url: '/user/protected',
+          method: "GET",
+          url: "/user/protected",
           headers: {
-            Authorization: 'Bearer ' + token,
-            rol: rol || '', // Pasa el rol si está disponible
+            Authorization: "Bearer " + token,
+            rol: rol || "", // Pasa el rol si está disponible
           },
         });
         user.value = data.user;
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error("Error fetching user data:", error);
       } finally {
         loading.value = false; // Deja de mostrar el indicador de carga
       }
@@ -199,7 +231,7 @@ export default defineComponent({
 }
 
 .email {
-  color: #86A286; /* Mismo color que los resultados */
+  color: #86a286; /* Mismo color que los resultados */
   font-size: 1rem;
 }
 
@@ -217,7 +249,7 @@ export default defineComponent({
 }
 
 .info-result {
-  color: #86A286; /* El color de los resultados es igual al correo */
+  color: #86a286; /* El color de los resultados es igual al correo */
   font-size: 1rem;
 }
 
@@ -267,6 +299,6 @@ export default defineComponent({
   text-align: center;
   margin-top: 30px;
   font-size: 1.1rem;
-  color: #86A286;
+  color: #86a286;
 }
 </style>
