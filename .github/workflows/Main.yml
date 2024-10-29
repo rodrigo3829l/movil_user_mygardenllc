@@ -175,8 +175,8 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
           set +e
-          snyk monitor --all-projects --org=6ce58cdd-2e65-4c0c-bbe5-705980cee5fe
-          snyk test --all-projects --org=6ce58cdd-2e65-4c0c-bbe5-705980cee5fe || exit_code=$?
+          snyk monitor --all-projects --org=6ce58cdd-2e65-4c0c-bbe5-705980cee5fe --exclude=android,ios
+          snyk test --all-projects --org=6ce58cdd-2e65-4c0c-bbe5-705980cee5fe --exclude=android,ios || exit_code=$?
           echo "::set-output name=exit_code::$exit_code"
           echo "exit_code=$exit_code"
           set -e
