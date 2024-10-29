@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router';
 import inputMixin from './mixins/inputMixin';
 import { IonicVue } from '@ionic/vue';
+import { createPinia } from 'pinia'; // Importa Pinia
 /* Import Tailwind CSS */
 import './styles/tailwind.css';
 import './styles/themes.css';
@@ -22,7 +23,8 @@ import '@ionic/vue/css/text-alignment.css';
 import '@ionic/vue/css/text-transformation.css';
 import '@ionic/vue/css/flex-utils.css';
 import '@ionic/vue/css/display.css';
-
+import { addIcons } from 'ionicons';
+import * as allIcons from 'ionicons/icons'; // Importa todos los íconos
 /**
  * Ionic Dark Mode
  * -----------------------------------------------------
@@ -33,9 +35,11 @@ import '@ionic/vue/css/display.css';
 /* @import '@ionic/vue/css/palettes/dark.always.css'; */
 /* @import '@ionic/vue/css/palettes/dark.class.css'; */
 import '@ionic/vue/css/palettes/dark.system.css';
-
+addIcons(allIcons);
+const pinia = createPinia();
 const app = createApp(App)
   .use(IonicVue)
+  .use(pinia)
   .use(router); // Usar el plugin global
 
   app.mixin(inputMixin);

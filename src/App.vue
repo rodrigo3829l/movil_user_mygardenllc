@@ -1,6 +1,7 @@
 <template>
   <ion-app>
-    <ion-router-outlet />
+    <!-- Solo router outlet para manejar las rutas -->
+    <ion-router-outlet></ion-router-outlet>
   </ion-app>
 </template>
 
