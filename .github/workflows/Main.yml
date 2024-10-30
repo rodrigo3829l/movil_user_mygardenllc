@@ -244,75 +244,74 @@ jobs:
             quit
           "
 
-  # e2e-tests-staging:
-  #   needs: deploy-staging
-  #   if: ${{ needs.unit-integration-tests.outputs.jest_exit_code == '0' && needs.snyk-scan.outputs.snyk_exit_code == '0' }}
-  #   runs-on: ubuntu-latest
-  #   outputs:
-  #     cypress_exit_code: ${{ steps.set_exit_code.outputs.exit_code }}
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: 0
-  #         token: ${{ secrets.MY_GH_TOKEN }}
-  #     - name: Cache Node Modules
-  #       uses: actions/cache@v2
-  #       with:
-  #         path: node_modules
-  #         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-node-
+  e2e-tests-staging:
+    needs: deploy-staging
+    if: ${{ needs.unit-integration-tests.outputs.jest_exit_code == '0' && needs.snyk-scan.outputs.snyk_exit_code == '0' }}
+    runs-on: ubuntu-latest
+    outputs:
+      cypress_exit_code: ${{ steps.set_exit_code.outputs.exit_code }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.MY_GH_TOKEN }}
+      - name: Cache Node Modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-  #     - name: Set up Node.js
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: "20"
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20"
 
-  #     - name: Install dependencies
-  #       run: npm install
+      - name: Install dependencies
+        run: npm install
 
-  #     - name: Install mochawesome Reporter
-  #       run: npm install mochawesome
+      - name: Install mochawesome Reporter
+        run: npm install mochawesome
 
-  #     - name: Install Cypress Binary
-  #       run: npx cypress install
+      - name: Install Cypress Binary
+        run: npx cypress install
 
-  #     - name: Run Cypress Tests
-  #       id: set_exit_code
-  #       run: |
-  #         set +e
-  #         npx cypress run --reporter mochawesome --reporter-options reportDir=cypress/reports || exit_code=$?
-  #         echo "::set-output name=exit_code::$exit_code"
-  #         set -e
-  #     - name: Handle Cypress Failure
-  #       if: ${{ steps.set_exit_code.outputs.exit_code != '0' }}
-  #       run: |
-  #         echo "Cypress tests failed. Skipping production deployment."
-  #     - name: Upload Cypress Test Results
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: cypress-results
-  #         path: cypress/reports/
+      - name: Run Cypress Tests
+        id: set_exit_code
+        run: |
+          set +e
+          npx cypress run --reporter mochawesome --reporter-options reportDir=cypress/reports || exit_code=$?
+          echo "::set-output name=exit_code::$exit_code"
+          set -e
+      - name: Handle Cypress Failure
+        if: ${{ steps.set_exit_code.outputs.exit_code != '0' }}
+        run: |
+          echo "Cypress tests failed. Skipping production deployment."
+      - name: Upload Cypress Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: cypress-results
+          path: cypress/reports/
 
-  # post-coverage-comment-cypress:
-  #   needs: e2e-tests-staging
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/github-script@v4
-  #       if: github.event_name == 'pull_request'
-  #       with:
-  #         script: |
-  #           github.rest.issues.createComment({
-  #             issue_number: context.issue.number,
-  #             owner: context.repo.owner,
-  #             repo: context.repo.repo,
-  #             body: `El reporte de Cypress está disponible en los artefactos: [Ver artefactos](${{ github.run_id }})`
-  #           });
+  post-coverage-comment-cypress:
+    needs: e2e-tests-staging
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v4
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `El reporte de Cypress está disponible en los artefactos: [Ver artefactos](${{ github.run_id }})`
+            });
 
   deploy:
-    needs: deploy-staging
-    # needs: e2e-tests-staging
-    # if: ${{ needs.e2e-tests-staging.outputs.cypress_exit_code == '0' }}
+    needs: e2e-tests-staging
+    if: ${{ needs.e2e-tests-staging.outputs.cypress_exit_code == '0' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

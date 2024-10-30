@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from "axios";
 
 // Crea una instancia de Axios con la configuración base
 const api: AxiosInstance = axios.create({
-  // baseURL: 'http://localhost:5000/api', // URL base de la API
+  // baseURL: 'http://localhost:3000/api', // URL base de la API
   baseURL: "https://db-api-mygarden-llc.onrender.com/api", // URL base de la API
   headers: {
     "Content-Type": "application/json", // Asegúrate de que todas las peticiones sean JSON
