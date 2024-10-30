@@ -1,9 +1,11 @@
 <template>
   <ion-app>
-    <ion-router-outlet />
+    <!-- Solo router outlet para manejar las rutas -->
+    <ion-router-outlet></ion-router-outlet>
   </ion-app>
 </template>
 
 <script setup lang="ts">
-import { IonApp, IonRouterOutlet } from '@ionic/vue';
+import { IonApp, IonRouterOutlet } from "@ionic/vue";
+// jj
 </script>

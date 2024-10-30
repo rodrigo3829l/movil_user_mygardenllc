@@ -3,7 +3,15 @@
     <IonContent fullscreen>
       <!-- Flecha hacia atrás -->
       <div class="back-button">
+<<<<<<< HEAD
         <IonIcon name="arrow-back-outline" class="text-black text-2xl" @click="goBack" />
+=======
+        <IonIcon
+          name="arrow-back-outline"
+          class="text-black text-2xl"
+          @click="goBack"
+        />
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
       </div>
 
       <!-- Toolbar -->
@@ -12,7 +20,14 @@
       </IonToolbar>
 
       <!-- Searchbar -->
+<<<<<<< HEAD
       <IonSearchbar v-model="searchQuery" placeholder="Search services"></IonSearchbar>
+=======
+      <IonSearchbar
+        v-model="searchQuery"
+        placeholder="Search services"
+      ></IonSearchbar>
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
 
       <!-- Filtros por status -->
       <div class="filters">
@@ -37,9 +52,15 @@
 
       <!-- Lista de servicios con paginación -->
       <IonList v-if="loading">
+<<<<<<< HEAD
             <!-- Mostrar 5 skeletons -->
             <SkeletonLoader v-for="n in 5" :key="n" />
         </IonList>
+=======
+        <!-- Mostrar 5 skeletons -->
+        <SkeletonLoader v-for="n in 5" :key="n" />
+      </IonList>
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
       <IonList v-else>
         <MyServiceComponent
           v-for="(service, index) in paginatedServices"
@@ -50,14 +71,27 @@
 
       <!-- Paginación -->
       <div class="pagination-controls">
+<<<<<<< HEAD
         <button :disabled="currentPage === 1" @click="previousPage" class="pagination-arrow">
+=======
+        <button
+          :disabled="currentPage === 1"
+          @click="previousPage"
+          class="pagination-arrow"
+        >
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
           <IonIcon name="arrow-back-outline"></IonIcon>
         </button>
 
         <button
           v-if="currentPage > 2"
           @click="changePage(1)"
+<<<<<<< HEAD
           class="pagination-number">
+=======
+          class="pagination-number"
+        >
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
           1
         </button>
 
@@ -67,7 +101,12 @@
           v-for="page in paginationRange"
           :key="page"
           @click="changePage(page)"
+<<<<<<< HEAD
           :class="['pagination-number', { active: currentPage === page }]">
+=======
+          :class="['pagination-number', { active: currentPage === page }]"
+        >
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
           {{ page }}
         </button>
 
@@ -76,11 +115,24 @@
         <button
           v-if="currentPage < totalPages - 2"
           @click="changePage(totalPages)"
+<<<<<<< HEAD
           class="pagination-number">
           {{ totalPages }}
         </button>
 
         <button :disabled="currentPage === totalPages" @click="nextPage" class="pagination-arrow">
+=======
+          class="pagination-number"
+        >
+          {{ totalPages }}
+        </button>
+
+        <button
+          :disabled="currentPage === totalPages"
+          @click="nextPage"
+          class="pagination-arrow"
+        >
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
           <IonIcon name="arrow-forward-outline"></IonIcon>
         </button>
       </div>
@@ -88,7 +140,17 @@
   </IonPage>
 </template>
 <script lang="ts">
+<<<<<<< HEAD
 import { defineComponent, ref, computed, onMounted, defineAsyncComponent } from 'vue';
+=======
+import {
+  defineComponent,
+  ref,
+  computed,
+  onMounted,
+  defineAsyncComponent,
+} from "vue";
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
 import {
   IonPage,
   IonContent,
@@ -100,12 +162,23 @@ import {
   IonList,
   IonItem,
   IonIcon,
+<<<<<<< HEAD
 } from '@ionic/vue';
 import MyServiceComponent from '@/components/MyServiceComponent.vue';
 import api from '@/axios/axios';
 import { Preferences } from '@capacitor/preferences';
 import { useRouter } from 'vue-router';
 const SkeletonLoader = defineAsyncComponent(() => import('../../components/SkeletonService.vue'));
+=======
+} from "@ionic/vue";
+import MyServiceComponent from "@/components/MyServiceComponent.vue";
+import api from "@/axios/axios";
+import { Preferences } from "@capacitor/preferences";
+import { useRouter } from "vue-router";
+const SkeletonLoader = defineAsyncComponent(
+  () => import("../../components/SkeletonService.vue"),
+);
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
 export default defineComponent({
   components: {
     MyServiceComponent,
@@ -119,11 +192,16 @@ export default defineComponent({
     IonList,
     IonItem,
     IonIcon,
+<<<<<<< HEAD
     SkeletonLoader
+=======
+    SkeletonLoader,
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
   },
   setup() {
     const router = useRouter();
     const services = ref([]);
+<<<<<<< HEAD
     const searchQuery = ref('');
     const selectedStatus = ref('all');
     const currentPage = ref(1);
@@ -131,6 +209,15 @@ export default defineComponent({
     const loading = ref(true)
     const actionSheetOptions = {
       header: 'Choose a service status',
+=======
+    const searchQuery = ref("");
+    const selectedStatus = ref("all");
+    const currentPage = ref(1);
+    const servicesPerPage = 5;
+    const loading = ref(true);
+    const actionSheetOptions = {
+      header: "Choose a service status",
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
     };
 
     // Función para volver a la página anterior
@@ -140,28 +227,50 @@ export default defineComponent({
 
     const fetchServices = async () => {
       try {
+<<<<<<< HEAD
         const { value: token } = await Preferences.get({ key: 'token' });
         const { value: rol } = await Preferences.get({ key: 'rol' });
 
         if (!token) {
           console.error('No token found');
+=======
+        const { value: token } = await Preferences.get({ key: "token" });
+        const { value: rol } = await Preferences.get({ key: "rol" });
+
+        if (!token) {
+          console.error("No token found");
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
           return;
         }
 
         const { data } = await api({
+<<<<<<< HEAD
           method: 'GET',
           url: '/schedule/userservices',
           headers: {
             Authorization: 'Bearer ' + token,
             rol: rol || 'client',
+=======
+          method: "GET",
+          url: "/schedule/userservices",
+          headers: {
+            Authorization: "Bearer " + token,
+            rol: rol || "client",
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
           },
         });
 
         services.value = data.services;
       } catch (error) {
+<<<<<<< HEAD
         console.error('Error fetching services:', error);
       } finally{
         loading.value = false
+=======
+        console.error("Error fetching services:", error);
+      } finally {
+        loading.value = false;
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
       }
     };
 
@@ -170,6 +279,7 @@ export default defineComponent({
       let filtered = services.value;
 
       if (searchQuery.value) {
+<<<<<<< HEAD
         filtered = filtered.filter(service =>
           service.service.name.toLowerCase().includes(searchQuery.value.toLowerCase())
         );
@@ -177,6 +287,19 @@ export default defineComponent({
 
       if (selectedStatus.value !== 'all') {
         filtered = filtered.filter(service => service.status === selectedStatus.value);
+=======
+        filtered = filtered.filter((service) =>
+          service.service.name
+            .toLowerCase()
+            .includes(searchQuery.value.toLowerCase()),
+        );
+      }
+
+      if (selectedStatus.value !== "all") {
+        filtered = filtered.filter(
+          (service) => service.status === selectedStatus.value,
+        );
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
       }
 
       return filtered;
@@ -238,7 +361,11 @@ export default defineComponent({
       nextPage,
       paginationRange,
       actionSheetOptions,
+<<<<<<< HEAD
       loading
+=======
+      loading,
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
     };
   },
 });
@@ -299,7 +426,11 @@ export default defineComponent({
 
 .ellipsis {
   margin: 0 5px;
+<<<<<<< HEAD
   color: #86A286;
+=======
+  color: #86a286;
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
 }
 
 .select-container {
