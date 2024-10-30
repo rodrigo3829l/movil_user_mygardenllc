@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: "20"
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Run Prettier
         run: npm run format
 
@@ -45,7 +45,7 @@ jobs:
         with:
           node-version: "20"
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Run ESLint
         run: npm run lint
 
@@ -71,7 +71,7 @@ jobs:
   #       with:
   #         node-version: "20"
   #     - name: Install dependencies
-  #       run: npm install
+  #       run: npm install --legacy-peer-deps
   #     - name: Run Jest Tests
   #       id: set_exit_code
   #       run: |
@@ -136,7 +136,7 @@ jobs:
         with:
           node-version: "20"
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
@@ -166,9 +166,9 @@ jobs:
         with:
           node-version: "20"
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Install Snyk CLI
-        run: npm install -g snyk
+        run: npm install -g snyk --legacy-peer-deps
       - name: Run Snyk Scan
         id: set_exit_code
         env:
@@ -216,7 +216,7 @@ jobs:
         with:
           node-version: "20"
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Build project
         run: npm run build
       - name: Upload Build Artifact
@@ -269,10 +269,10 @@ jobs:
           node-version: "20"
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: Install mochawesome Reporter
-        run: npm install mochawesome
+        run: npm install mochawesome --legacy-peer-deps
 
       - name: Install Cypress Binary
         run: npx cypress install
@@ -323,7 +323,7 @@ jobs:
         with:
           node-version: "20"
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Build project
         run: npm run build
       - name: Upload Build Artifact
