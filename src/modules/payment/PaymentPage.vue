@@ -1,7 +1,11 @@
 <template>
   <IonPage>
     <div v-if="loading">
+<<<<<<< HEAD
         <ion-progress-bar type="indeterminate"></ion-progress-bar>
+=======
+      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
     </div>
     <IonContent v-else>
       <IonToolbar>
@@ -13,13 +17,25 @@
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-lg font-semibold">Service Summary</h2>
           <p class="text-gray-500">
+<<<<<<< HEAD
             ${{ selectedPercentage === '50%' ? (serviceData.quote / 2).toFixed(2) : serviceData.quote.toFixed(2) }}
+=======
+            ${{
+              selectedPercentage === "50%"
+                ? (serviceData.quote / 2).toFixed(2)
+                : serviceData.quote.toFixed(2)
+            }}
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
           </p>
         </div>
         <div class="relative w-full h-2 bg-gray-200 rounded-full mb-4">
           <div
             :class="{
+<<<<<<< HEAD
               'bg-green-600 h-2 rounded-full': true, 
+=======
+              'bg-green-600 h-2 rounded-full': true,
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
               'w-1/2': selectedPercentage === '50%' && !hide50PercentOption,
               'w-full': selectedPercentage === '100%',
             }"
@@ -59,7 +75,13 @@
         <!-- Pay Now -->
         <div class="flex justify-between items-center mt-4 px-4">
           <p class="text-lg font-semibold">Pay Now</p>
+<<<<<<< HEAD
           <p class="text-lg font-semibold text-green-600">${{ payNowAmount }}</p>
+=======
+          <p class="text-lg font-semibold text-green-600">
+            ${{ payNowAmount }}
+          </p>
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
         </div>
       </div>
 
@@ -102,17 +124,35 @@
           <form @submit.prevent="handleStripePayment">
             <label for="card-element">Tarjeta de crédito/débito</label>
             <div id="card-element"></div>
+<<<<<<< HEAD
             <IonButton expand="block" type="submit" @click="handleStripePayment">Pagar con tarjeta</IonButton>
           </form>
         </div>
 
 
+=======
+            <IonButton expand="block" type="submit" @click="handleStripePayment"
+              >Pagar con tarjeta</IonButton
+            >
+          </form>
+        </div>
+
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
         <div v-show="selectedPaymentMethod === 'paypal'">
           <!-- Botón de PayPal -->
           <div id="paypal-button-container"></div>
         </div>
 
+<<<<<<< HEAD
         <div v-show="selectedPaymentMethod === 'apple-pay' || selectedPaymentMethod === 'google-pay'">
+=======
+        <div
+          v-show="
+            selectedPaymentMethod === 'apple-pay' ||
+            selectedPaymentMethod === 'google-pay'
+          "
+        >
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
           <!-- Botón de Apple Pay / Google Pay -->
           <div id="payment-request-button"></div>
         </div>
@@ -122,6 +162,7 @@
 </template>
 
 <script lang="ts">
+<<<<<<< HEAD
 import { defineComponent, ref, computed, onMounted, watch, nextTick } from 'vue';
 import { IonPage, IonContent, IonToolbar, IonTitle, IonList, IonRadioGroup, IonItem, IonRadio, IonButton, IonProgressBar } from '@ionic/vue';
 import api from '@/axios/axios';
@@ -129,6 +170,26 @@ import { useRoute, useRouter } from 'vue-router';
 import { loadStripe, StripeCardElement } from '@stripe/stripe-js';
 import { Preferences } from '@capacitor/preferences';
 
+=======
+import { defineComponent, ref, computed, onMounted, watch } from "vue";
+import {
+  IonPage,
+  IonContent,
+  IonToolbar,
+  IonTitle,
+  IonList,
+  IonRadioGroup,
+  IonItem,
+  IonRadio,
+  IonButton,
+  IonProgressBar,
+} from "@ionic/vue";
+import api from "@/axios/axios";
+import { useRoute, useRouter } from "vue-router";
+import { loadStripe, StripeCardElement } from "@stripe/stripe-js";
+import { nextTick } from "vue";
+import { Preferences } from "@capacitor/preferences";
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
 export default defineComponent({
   components: {
     IonPage,
@@ -140,18 +201,29 @@ export default defineComponent({
     IonItem,
     IonRadio,
     IonButton,
+<<<<<<< HEAD
     IonProgressBar
+=======
+    IonProgressBar,
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
   },
   setup() {
     const route = useRoute();
     const router = useRouter();
+<<<<<<< HEAD
     const serviceData = ref<any>(null);
     const selectedPercentage = ref('50%');
     const selectedPaymentMethod = ref('');
+=======
+    const serviceData = ref(null);
+    const selectedPercentage = ref("50%");
+    const selectedPaymentMethod = ref("");
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
     const hide50PercentOption = ref(false);
     const stripe = ref<any>(null);
     const cardElement = ref<StripeCardElement | null>(null);
     const paymentRequest = ref<any>(null);
+<<<<<<< HEAD
     const loading = ref(true);
 
     const payNowAmount = computed(() =>
@@ -243,6 +315,237 @@ export default defineComponent({
     });
 
     watch(() => route.params.id, fetchServiceData);
+=======
+    const loading = ref(true); // Variable para el estado de carga
+
+    const payNowAmount = computed(() => {
+      if (!serviceData.value) {
+        return 0; // Si no hay datos de servicio, devuelve 0
+      }
+      return selectedPercentage.value === "50%"
+        ? (serviceData.value.quote / 2).toFixed(2)
+        : serviceData.value.pending.toFixed(2);
+    });
+
+    const fetchServiceData = async () => {
+      try {
+        const { data } = await api.get(
+          `/schedule/scheduleservice/${route.params.id}`,
+        );
+        console.log(data);
+        serviceData.value = data.scheduledService;
+        console.log(serviceData.value.quote);
+
+        if (serviceData.value.pending <= serviceData.value.quote / 2) {
+          hide50PercentOption.value = true;
+          selectedPercentage.value = "100%";
+        }
+
+        loading.value = false; // Desactivar la barra de progreso cuando la petición se complete
+      } catch (error) {
+        console.error("Error fetching service data:", error);
+        loading.value = false; // Desactivar la barra de progreso en caso de error
+      }
+    };
+
+    // Stripe payment logic
+    onMounted(async () => {
+      stripe.value = await loadStripe(
+        "pk_test_51Q5aH7AXipH64sKmHbNWE8XRQ8syr2gEoTQg6Tnd6VDVjr771xrdqLhtKTGK4jOekNhZUTjazELF92jF0fqNHJHa00xPThmI9F",
+      );
+      if (stripe.value) {
+        const elements = stripe.value.elements();
+        cardElement.value = elements.create("card");
+        cardElement.value?.mount("#card-element");
+
+        paymentRequest.value = stripe.value.paymentRequest({
+          country: "US",
+          currency: "usd",
+          total: {
+            label: "Pago por servicio",
+            amount: parseFloat(payNowAmount.value) * 100, // Monto dinámico en centavos
+          },
+          requestPayerName: true,
+          requestPayerEmail: true,
+        });
+
+        const prButton = elements.create("paymentRequestButton", {
+          paymentRequest: paymentRequest.value,
+        });
+
+        paymentRequest.value.canMakePayment().then((result: any) => {
+          const paymentRequestButton = document.getElementById(
+            "payment-request-button",
+          );
+          if (result && paymentRequestButton) {
+            prButton.mount("#payment-request-button");
+          } else if (paymentRequestButton) {
+            paymentRequestButton.style.display = "none";
+          }
+        });
+      }
+    });
+
+    const handleStripePayment = async () => {
+      const { paymentMethod, error } = await stripe.value.createPaymentMethod({
+        type: "card",
+        card: cardElement.value!,
+      });
+
+      if (error) {
+        console.error("Error en el pago:", error);
+      } else {
+        sendPaymentToBackend(paymentMethod, parseFloat(payNowAmount.value)); // Enviar la cantidad correcta
+      }
+    };
+    const setupStripe = async () => {
+      stripe.value = await loadStripe(
+        "pk_test_51Q5aH7AXipH64sKmHbNWE8XRQ8syr2gEoTQg6Tnd6VDVjr771xrdqLhtKTGK4jOekNhZUTjazELF92jF0fqNHJHa00xPThmI9F",
+      );
+      if (stripe.value) {
+        // Utilizamos nextTick para esperar a que el DOM esté completamente actualizado.
+        await nextTick();
+
+        const elements = stripe.value.elements();
+        cardElement.value = elements.create("card");
+
+        // Asegúrate de que el elemento existe en el DOM antes de montarlo
+        const cardElementContainer = document.getElementById("card-element");
+        if (cardElementContainer) {
+          cardElement.value.mount("#card-element");
+          console.log("Stripe card element mounted:", cardElement.value);
+        } else {
+          console.error("El contenedor de #card-element no existe.");
+        }
+      }
+    };
+
+    const updatePaymentRequest = () => {
+      if (paymentRequest.value) {
+        paymentRequest.value.update({
+          total: {
+            label: "Pago por servicio",
+            amount: parseFloat(payNowAmount.value) * 100, // Convertir a centavos
+          },
+        });
+      }
+    };
+
+    const sendPaymentToBackend = async (paymentData: any, mount: number) => {
+      // Obtener el token desde Preferences
+      try {
+        const { value: token } = await Preferences.get({ key: "token" });
+
+        // Obtener el scheduleService desde los parámetros de la ruta
+        const scheduleService = route.params.id;
+
+        // Construir el objeto de datos para enviar al backend
+        const paymentDetails = {
+          user: token, // Utilizamos el token que viene de Preferences
+          mount, // Monto dinámico enviado (ya calculado anteriormente)
+          scheduleService, // ID del servicio agendado desde la ruta
+          type: "65d9c9eda4ee265c1c861501", // Tipo de pago (Stripe o PayPal)
+          paypalOrderId: paymentData.id, // ID del PaymentMethod o OrderId (de Stripe o PayPal)
+          paypalPayerId: paymentData.type || "PayPal",
+        };
+
+        // Enviar los datos al backend o hacer lo necesario con ellos
+        console.log(paymentDetails);
+
+        const { data } = await api.post("/pays/pay", paymentDetails);
+        console.log(data);
+        if (data.success) {
+          router.push(`/my-service/${route.params.id}`);
+        } else {
+          alert("Payment not efectuaded");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    // const sendPaymentToBackend = (paymentData: any, amount: number) => {
+    //   const data = {
+    //     user: "userId",
+    //     amount, // Monto dinámico enviado
+    //     scheduleService: "Servicio de ejemplo",
+    //     type: paymentData.type || "PayPal",
+    //     paymentId: paymentData.id,
+    //   };
+    //   console.log(data);
+    // };
+
+    const loadPayPalScript = () => {
+      return new Promise<void>((resolve) => {
+        const script = document.createElement("script");
+        script.src =
+          "https://www.paypal.com/sdk/js?client-id=AfOuWCGm02PBc-nT5eA3DrWwE4_YT-kqE7G0Vd_RTKIlHpDWpiE3Qui9UMxUkRxPdUkMaGJj8m_4Eg1X";
+        script.addEventListener("load", () => resolve());
+        document.body.appendChild(script);
+      });
+    };
+
+    const renderPayPalButton = async () => {
+      const paypal = (window as any).paypal;
+      if (!paypal) {
+        console.error("PayPal SDK not loaded.");
+        return;
+      }
+
+      paypal
+        .Buttons({
+          createOrder: (data: any, actions: any) => {
+            return actions.order.create({
+              purchase_units: [
+                {
+                  amount: {
+                    currency_code: "USD",
+                    value: payNowAmount.value, // Monto dinámico
+                  },
+                },
+              ],
+            });
+          },
+          onApprove: async (data: any, actions: any) => {
+            const order = await actions.order.capture();
+            sendPaymentToBackend(
+              { type: "PayPal", ...order },
+              parseFloat(payNowAmount.value),
+            ); // Enviar el monto dinámico al backend
+          },
+          onError: (err: any) => {
+            console.error("Error en PayPal", err);
+          },
+        })
+        .render("#paypal-button-container");
+    };
+
+    watch(selectedPaymentMethod, async (newMethod) => {
+      if (newMethod === "paypal") {
+        await loadPayPalScript();
+        setTimeout(() => {
+          renderPayPalButton();
+        }, 100);
+      }
+    });
+
+    watch(payNowAmount, () => {
+      updatePaymentRequest(); // Actualizar el monto de pago dinámicamente
+    });
+
+    watch(selectedPaymentMethod, async (newMethod) => {
+      if (newMethod === "card") {
+        await setupStripe(); // Ejecuta Stripe solo si el método de pago seleccionado es tarjeta
+      }
+    });
+
+    watch(
+      () => route.params.id,
+      () => {
+        fetchServiceData();
+      },
+    );
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
 
     onMounted(() => {
       fetchServiceData();
@@ -254,6 +557,7 @@ export default defineComponent({
       selectedPaymentMethod,
       payNowAmount,
       handleStripePayment,
+<<<<<<< HEAD
       loading,
       serviceData,
       hide50PercentOption
@@ -263,6 +567,25 @@ export default defineComponent({
 </script>
 
 
+=======
+      loading, // Estado de carga
+      serviceData,
+      hide50PercentOption,
+      stripe,
+      cardElement,
+      paymentRequest,
+      fetchServiceData,
+      sendPaymentToBackend,
+      loadPayPalScript,
+      renderPayPalButton,
+      setupStripe,
+      updatePaymentRequest,
+    };
+  },
+});
+</script>
+
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
 <style scoped>
 .custom-radio-item {
   border: 2px solid #a6d5a6; /* Color verde más oscuro */
@@ -295,5 +618,8 @@ ion-item::part(native) {
   width: 100%;
   max-width: 400px;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7540c70f338af5a141686fdc06ec344b2b51908e
 </style>
