@@ -7,5 +7,5 @@
 
 <script setup lang="ts">
 import { IonApp, IonRouterOutlet } from "@ionic/vue";
-// jjjj
+// jjjj ggola mundo
 </script>
