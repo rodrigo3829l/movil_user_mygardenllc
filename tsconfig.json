@@ -15,7 +15,8 @@
     "noEmit": true,
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "allowJs": true  // <- Añadir esta línea  
   },
   "include": [
     "src/**/*.ts",
@@ -23,7 +24,8 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "src/plugins/**/*.d.ts",
-    "src/types/global.d.ts"
+    "src/types/global.d.ts",
+    "src/types/**/*.d.ts"  // <- Asegúrate de incluir esta línea
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
