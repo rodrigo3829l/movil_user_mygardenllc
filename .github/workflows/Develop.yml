@@ -248,7 +248,7 @@ jobs:
 
   notify-email:
     needs: [unit-test, snyk-scan, sonar-scan]
-    needs: [snyk-scan, sonar-scan]
+    # needs: [snyk-scan, sonar-scan]
     runs-on: ubuntu-latest
     steps:
       - name: Prepare SHA and Run ID

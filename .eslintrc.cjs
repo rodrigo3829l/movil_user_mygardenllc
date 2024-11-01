@@ -17,5 +17,12 @@ module.exports = {
     "vue/no-deprecated-slot-attribute": "off",
     "@typescript-eslint/no-explicit-any": "off",
   },
-  ignorePatterns: ["/src/", "node_modules/", "dist/", "android/", "tests/", "vue.config.js"],
+  ignorePatterns: [
+    "/src/",
+    "node_modules/",
+    "dist/",
+    "android/",
+    "tests/",
+    "vue.config.js",
+  ],
 };

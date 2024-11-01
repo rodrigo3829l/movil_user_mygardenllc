@@ -15,7 +15,7 @@ export default {
     "src/**",
     "android/app/build/intermediates/assets/debug/native-bridge.js",
     "tests/**",
-    "vue.config.js"
+    "vue.config.js",
   ],
   languageOptions: {
     parser: typescriptParser,

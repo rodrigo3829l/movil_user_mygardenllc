@@ -1,0 +1,9 @@
+# Ignorar directorios y archivos específicos
+node_modules/
+dist/
+android/
+ios/
+public/
+tests/
+android/app/build/intermediates/variant_model/debug/variant_model.json
+vue.config.js
