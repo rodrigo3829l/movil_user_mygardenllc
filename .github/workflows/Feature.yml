@@ -1,4 +1,4 @@
-name: PWA CI/CD Workflow - Feature  
+name: PWA CI/CD Workflow - Feature
 
 on:
   push:

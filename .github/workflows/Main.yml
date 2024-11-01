@@ -49,7 +49,7 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
-  unit-tests:
+  unit-test:
     needs: lint
     runs-on: ubuntu-latest
     outputs:

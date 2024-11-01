@@ -6,14 +6,16 @@ import typescriptParser from "@typescript-eslint/parser";
 export default {
   files: ["**/*.{js,mjs,cjs,vue,ts,tsx}"],
   ignores: [
-    ".github/**", 
-    "android/**", 
-    "dist/**", 
-    "ios/**", 
-    "node_modules/**", 
+    ".github/**",
+    "android/**",
+    "dist/**",
+    "ios/**",
+    "node_modules/**",
     "public/**",
     "src/**",
     "android/app/build/intermediates/assets/debug/native-bridge.js",
+    "tests/**",
+    "vue.config.js"
   ],
   languageOptions: {
     parser: typescriptParser,

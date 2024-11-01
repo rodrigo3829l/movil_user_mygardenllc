@@ -5,6 +5,8 @@ node_modules/
 /ios/
 /android/
 /src/
+tests/
+vue.config.js
 
 .github
 # Archivos de entorno local
