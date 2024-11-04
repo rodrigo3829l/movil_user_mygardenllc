@@ -25,6 +25,8 @@ import "@ionic/vue/css/flex-utils.css";
 import "@ionic/vue/css/display.css";
 import { addIcons } from "ionicons";
 import * as allIcons from "ionicons/icons"; // Importa todos los íconos
+import { PushNotifications } from "@capacitor/push-notifications";
+import { requestNotificationPermission } from "./utils/notificationUtils";
 /**
  * Ionic Dark Mode
  * -----------------------------------------------------
@@ -44,3 +46,26 @@ app.mixin(inputMixin);
 router.isReady().then(() => {
   app.mount("#app");
 });
+async function initializeApp() {
+  console.log("Inicializando solicitud de permisos de notificación...");
+  
+  // Solicitar permisos de notificación y registrar listeners
+  await requestNotificationPermission();
+
+  // Listener para recibir notificaciones en primer plano
+  PushNotifications.addListener('pushNotificationReceived', (notification) => {
+    console.log("Listener de notificación en primer plano activado:", notification);
+
+    alert(`Notificación recibida:\nTítulo: ${notification.title}\nCuerpo: ${notification.body}`);
+  });
+
+  // Listener para manejar acciones de notificación en segundo plano
+  PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
+    console.log("Acción en notificación realizada:", notification);
+
+    alert(`Acción en notificación realizada: ${JSON.stringify(notification.notification)}`);
+  });
+}
+
+// Inicializar aplicación con los listeners registrados
+initializeApp();

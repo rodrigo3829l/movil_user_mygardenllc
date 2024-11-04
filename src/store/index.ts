@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import api from "@/axios/axios";
 import { Preferences } from "@capacitor/preferences";
+import { PushNotifications } from "@capacitor/push-notifications";
 
 // Define el store de Pinia
 export const useAuthStore = defineStore("auth", {
@@ -11,14 +12,34 @@ export const useAuthStore = defineStore("auth", {
     email: null as string | null,
     rol: null as string | null,
     image: null as string | null,
+    fcmToken: null as string | null,
   }),
 
   actions: {
+    async registerPushNotifications() {
+      return new Promise((resolve, reject) => {
+        PushNotifications.register();
+    
+        PushNotifications.addListener('registration', (token) => {
+          this.fcmToken = token.value;
+          console.log("Token FCM obtenido:", token.value);
+          resolve(this.fcmToken);
+        });
+    
+        PushNotifications.addListener('registrationError', (error) => {
+          console.error("Error en la registración de notificaciones push:", error);
+          reject(error);
+        });
+      });
+    },
     async login(email: string, pass: string, dpto: string) {
+      await this.registerPushNotifications();
       const datos = {
         email,
         password: pass,
         department: dpto,
+        fcmToken: this.fcmToken,
+        platform: "mobile", 
       };
 
       try {

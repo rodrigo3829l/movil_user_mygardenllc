@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "27910282456",
+    "project_id": "notifications-32633",
+    "storage_bucket": "notifications-32633.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:27910282456:android:7e951bfc511ee9344e4bad",
+        "android_client_info": {
+          "package_name": "com.mygardenllc.userapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKq2SAjJQzUKKXAjeGajjTs_rQ3c1mU5Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:27910282456:android:de381a1192aa6a454e4bad",
+        "android_client_info": {
+          "package_name": "io.ionic.starter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKq2SAjJQzUKKXAjeGajjTs_rQ3c1mU5Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
