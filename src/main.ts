@@ -36,6 +36,27 @@ import { requestNotificationPermission } from "./utils/notificationUtils";
 
 /* @import '@ionic/vue/css/palettes/dark.always.css'; */
 /* @import '@ionic/vue/css/palettes/dark.class.css'; */
+async function initializeApp() {
+  console.log("Inicializando solicitud de permisos de notificación...");
+  alert("Inicializando solicitud de permisos de notificación...");
+
+  // Solicitar permisos de notificación y registrar listeners
+  await requestNotificationPermission();
+
+  // Listener para recibir notificaciones en primer plano
+  PushNotifications.addListener('pushNotificationReceived', (notification) => {
+    console.log("Notificación recibida en primer plano:", notification);
+    alert(`Notificación recibida:\nTítulo: ${notification.title}\nCuerpo: ${notification.body}`);
+  });
+
+  // Listener para manejar acciones de notificación en segundo plano
+  PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
+    console.log("Acción en notificación realizada:", notification);
+    alert(`Acción en notificación realizada: ${JSON.stringify(notification.notification)}`);
+  });
+}
+
+// Inicializar aplicación con los listeners registrados
 import "@ionic/vue/css/palettes/dark.system.css";
 addIcons(allIcons);
 const pinia = createPinia();
@@ -44,28 +65,8 @@ const app = createApp(App).use(IonicVue).use(pinia).use(router); // Usar el plug
 app.mixin(inputMixin);
 
 router.isReady().then(() => {
+  initializeApp();
   app.mount("#app");
 });
-async function initializeApp() {
-  console.log("Inicializando solicitud de permisos de notificación...");
-  
-  // Solicitar permisos de notificación y registrar listeners
-  await requestNotificationPermission();
 
-  // Listener para recibir notificaciones en primer plano
-  PushNotifications.addListener('pushNotificationReceived', (notification) => {
-    console.log("Listener de notificación en primer plano activado:", notification);
 
-    alert(`Notificación recibida:\nTítulo: ${notification.title}\nCuerpo: ${notification.body}`);
-  });
-
-  // Listener para manejar acciones de notificación en segundo plano
-  PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
-    console.log("Acción en notificación realizada:", notification);
-
-    alert(`Acción en notificación realizada: ${JSON.stringify(notification.notification)}`);
-  });
-}
-
-// Inicializar aplicación con los listeners registrados
-initializeApp();

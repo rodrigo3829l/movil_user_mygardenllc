@@ -7,26 +7,7 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:27910282456:android:7e951bfc511ee9344e4bad",
-        "android_client_info": {
-          "package_name": "com.mygardenllc.userapp"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCKq2SAjJQzUKKXAjeGajjTs_rQ3c1mU5Y"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:27910282456:android:de381a1192aa6a454e4bad",
+        "mobilesdk_app_id": "1:27910282456:android:88aaf671cd65bb8f4e4bad",
         "android_client_info": {
           "package_name": "io.ionic.starter"
         }
