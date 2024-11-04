@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import api from "@/axios/axios";
 import { Preferences } from "@capacitor/preferences";
 import { PushNotifications } from "@capacitor/push-notifications";
-
+import { Capacitor } from '@capacitor/core';
 // Define el store de Pinia
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -17,6 +17,12 @@ export const useAuthStore = defineStore("auth", {
 
   actions: {
     async registerPushNotifications() {
+      if (!Capacitor.isNativePlatform()) {
+        console.log("Entorno web detectado. No se registrarán notificaciones push.");
+        // Genera un token aleatorio para el entorno web
+        this.fcmToken = "web-simulated-token-" + Math.random().toString(36).substr(2, 10);
+        return;
+      }
       return new Promise((resolve, reject) => {
         PushNotifications.register();
     

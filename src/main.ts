@@ -4,6 +4,7 @@ import router from "./router";
 import inputMixin from "./mixins/inputMixin";
 import { IonicVue } from "@ionic/vue";
 import { createPinia } from "pinia"; // Importa Pinia
+import { Capacitor } from "@capacitor/core";
 /* Import Tailwind CSS */
 import "./styles/tailwind.css";
 import "./styles/themes.css";
@@ -65,7 +66,9 @@ const app = createApp(App).use(IonicVue).use(pinia).use(router); // Usar el plug
 app.mixin(inputMixin);
 
 router.isReady().then(() => {
-  initializeApp();
+  if (Capacitor.isNativePlatform()) {
+    initializeApp();
+  }
   app.mount("#app");
 });
 
