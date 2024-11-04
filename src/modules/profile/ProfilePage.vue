@@ -89,6 +89,27 @@
           <IonButton expand="block" color="success" @click="viewServices"
             >View Services</IonButton
           >
+          <!-- <IonButton expand="block" color="tertiary" @click="notifications">
+            View Notifications
+            <IonBadge v-if="unreadCommentsCount > 0" class="notification-badge">{{ unreadCommentsCount }}</IonBadge>
+          </IonButton> -->
+          <IonButton expand="block" color="tertiary" @click="notifications" class="animate-pulse">
+            View Notifications
+          </IonButton><br>
+          <IonButton expand="block" color="tertiary" @click="notifications" class="glow-effect">
+            View Notifications
+          </IonButton><br>
+          <IonButton expand="block" color="tertiary" @click="notifications" class="animate-bounce">
+            View Notifications
+          </IonButton><br>
+          <IonButton expand="block" color="tertiary" @click="notifications" class="relative flex items-center space-x-2">
+            <span>View Notifications</span>
+            <span class="h-2 w-2 bg-red-500 rounded-full animate-ping absolute right-0 ml-2"></span>
+          </IonButton>
+
+
+
+
           <IonButton expand="block" color="dark" @click="logout"
             >Logout</IonButton
           >
@@ -112,8 +133,9 @@ import {
   IonTitle,
   IonButton,
   IonIcon,
+  IonBadge
 } from "@ionic/vue";
-import { Preferences } from "@capacitor/preferences"; // Importa Preferences de Capacitor
+import { Preferences } from "@capacitor/preferences"; 
 import { useRouter } from "vue-router";
 import api from "@/axios/axios";
 const SkeletonLoader = defineAsyncComponent(
@@ -129,17 +151,42 @@ export default defineComponent({
     IonButton,
     IonIcon,
     SkeletonLoader,
+    IonBadge
   },
   setup() {
     const router = useRouter();
     const user = ref<any>(null);
     const loading = ref(true); // Variable de carga
-
+    const unreadCommentsCount = ref(0);
     // Función para regresar a la página anterior
     const goBack = () => {
       router.back();
     };
+    const fetchUnreadComments = async () => {
+      try {
+        const token = await Preferences.get({ key: "token" });
+        if (!token.value) {
+          return;
+        }
+        const { data } = await api({
+          method: "GET",
+          url: "/comments/unread",
+          headers: {
+            Authorization: "Bearer " + token.value,
+            rol: "client",
+          },
+        });
 
+        if (data.success && data.comments) {
+          const unreadComments = data.comments.filter((comment) => !comment.read);
+          unreadCommentsCount.value = unreadComments.length;
+        } else {
+          unreadCommentsCount.value = 0;
+        }
+      } catch (error) {
+        console.error("Error fetching unread comments:", error);
+      }
+    };
     // Función para formatear fechas
     const formatDate = (dateString: string) => {
       const date = new Date(dateString);
@@ -154,13 +201,17 @@ export default defineComponent({
 
     // Función para redirigir a la página de servicios
     const viewServices = () => {
-      router.push("/services");
+      router.push("/my-services");
     };
 
     // Función para cerrar sesión
     const logout = async () => {
       await Preferences.clear(); // Borra todos los datos de Preferences
       router.push("/login");
+    };
+
+    const notifications = async () => {
+      router.push("/notifications");
     };
 
     // Función para obtener los datos del usuario desde la API
@@ -192,8 +243,9 @@ export default defineComponent({
 
     onMounted(() => {
       fetchUserData();
+      fetchUnreadComments(); // Llama también a esta función para cargar los comentarios no leídos
+      setInterval(fetchUnreadComments, 1000);
     });
-
     return {
       goBack,
       user,
@@ -202,6 +254,8 @@ export default defineComponent({
       viewServices,
       logout,
       loading,
+      notifications,
+      unreadCommentsCount
     };
   },
 });
@@ -301,4 +355,32 @@ export default defineComponent({
   font-size: 1.1rem;
   color: #86a286;
 }
+.notification-badge {
+  position: absolute;
+  top: 0px; /* Ajusta este valor para bajarlo un poco */
+  right: 10px;
+  background-color: red;
+  color: white;
+  font-size: 0.7rem;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  z-index: 1;
+}
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(0, 255, 150, 0.6), 0 0 20px rgba(0, 255, 150, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(0, 255, 150, 0.7), 0 0 30px rgba(0, 255, 150, 0.5);
+  }
+}
+
+.glow-effect {
+  animation: glow 2s ease-in-out infinite;
+}
+
 </style>

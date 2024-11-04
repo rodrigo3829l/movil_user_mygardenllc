@@ -118,6 +118,7 @@ const MyServicesPage = () => import("@/modules/myservices/MyServicesPage.vue");
 const LoginPage = () => import("@/modules/login/LoginPage.vue");
 const ServiceInfoPage = () => import("@/modules/services/ServiceInfoPage.vue");
 const PaymentPage = () => import("@/modules/payment/PaymentPage.vue");
+const NotificationPage = () => import("@/modules/notifications/NotificationsPage.vue");
 const TabsPage = () => import("@/components/Navbar.vue");
 
 const routes = [
@@ -182,6 +183,11 @@ const routes = [
         path: "/payment/:id",
         name: "payment",
         component: PaymentPage,
+      },
+      {
+        path: "/notifications",
+        name: "notifications",
+        component: NotificationPage,
       },
     ],
   },
