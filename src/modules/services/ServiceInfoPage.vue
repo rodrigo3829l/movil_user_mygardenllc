@@ -225,6 +225,8 @@ export default defineComponent({
         // Redirigir a "Mis Servicios" después del éxito
       } catch (error) {
         console.error("Error al agendar servicio:", error);
+      } finally {
+        isSubmitting.value = false;
       }
     };
 

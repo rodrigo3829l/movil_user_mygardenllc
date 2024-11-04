@@ -24,7 +24,7 @@ export async function requestNotificationPermission() {
                     importance: 4,
                 });
                 console.log("Canal de notificación creado: 'general'");
-                alert("Canal de notificación creado: 'general'");
+                // alert("Canal de notificación creado: 'general'");
             }
 
         } else {
